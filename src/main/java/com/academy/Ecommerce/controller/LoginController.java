@@ -1,16 +1,17 @@
 package com.academy.Ecommerce.controller;
 
+import com.academy.Ecommerce.DTO.ResetPasswordDTO;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class LoginController {
     private final UserService userService;
     private final JavaMailSender javaMailSender;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String loginPage(){
@@ -39,7 +41,6 @@ public class LoginController {
         }
         String confirmationToken = UUID.randomUUID().toString();
         user.setConfirmationToken(confirmationToken);
-        // save the user to DB
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject("Reset Password");
@@ -50,4 +51,45 @@ public class LoginController {
         userService.saveUser(user);
         return "redirect:/api/v1/forgetPassword?emailSent";
     }
+
+    @GetMapping("/reset")
+    public String reset(@RequestParam("token") String token, Model model){
+        model.addAttribute("token", token);
+        model.addAttribute("resetPasswordDTO", new ResetPasswordDTO());
+        return "reset";
+    }
+
+    @PostMapping("/reset")
+    public String resetPassword(@Valid @ModelAttribute ResetPasswordDTO resetPasswordDTO,
+                                BindingResult bindingResult, @RequestParam("token") String token, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("token", token);
+            // do you need to add resetPasswordDTO object to the model
+            return "reset";
+        }
+        System.out.println("passed binding result");
+
+        String password = resetPasswordDTO.getPassword();
+        String confirmPassword = resetPasswordDTO.getConfirmPassword();
+
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("token", token);
+            model.addAttribute("error", "passwordMismatch");
+            return "reset";
+        }
+        System.out.println("passed passwords equality");
+
+        User user = userService.findUserByConfirmationToken(token);
+        if (user == null) {
+            return "redirect:/api/v1/reset?token=" + token + "&error=userNotFound";
+        }
+
+        user.setPassword(passwordEncoder.encode(password));
+        user.setConfirmationToken(null);
+        userService.saveUser(user);
+        System.out.println("passed user saved");
+
+        return "redirect:/api/v1/reset?token=" + token + "&success";
+    }
+
 }

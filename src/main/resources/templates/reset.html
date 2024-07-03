@@ -11,7 +11,18 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
-    <title>forgetPass</title>
+    <title>reset</title>
+    <style>
+        .password-conditions {
+            margin-top: 2%;
+            color: red;
+            font-size: 88%;
+        }
+        .password-conditions p {
+            text-align: left;
+            margin: 0 0 0 33%;
+        }
+    </style>
 </head>
 <body>
 
@@ -23,9 +34,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="mb-5">
-                    <p class="text-center m-0"> Enter your email address associated with your account <br>
-                        and we'll send you a link to reset your password.
-                    </p>
+                    <h5 class="text-center font-weight-bold m-0">Enter the new password.</h5>
+                    <div class="password-conditions">
+                        <p>Password must be at least 8 characters long.</p>
+                        <p>Password should contain at least one letter (uppercase or lowercase).</p>
+                        <p>Password cannot contain special characters like: +, -, %, &, $, #.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -33,28 +47,50 @@
             <div class="col-12 col-lg-10 col-xl-8">
                 <div class="row gy-5 justify-content-center">
                     <div class="col-12 col-lg-5">
-                        <div th:if="${param.userNotFound}">
+                        <div th:if="${error}">
+                            <div th:if="${error == 'userNotFound'}">
+                                <div class="alert alert-danger" role="alert">
+                                    The link might be expired.
+                                </div>
+                            </div>
+                            <div th:if="${error == 'passwordMismatch'}">
+                                <div class="alert alert-danger" role="alert">
+                                    Passwords Don't Match. try again.
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${param.passDoNotMatch}">
                             <div class="alert alert-danger" role="alert">
-                                This Email is not registered.
+                                Passwords Don't Match. try again.
                             </div>
                         </div>
-                        <div th:if="${param.emailSent}">
+                        <div th:if="${param.success}">
                             <div class="alert alert-success" role="alert">
-                                Please check your email.
+                                Password changed successfully.
                             </div>
                         </div>
-                        <form action="#" th:action="@{/api/v1/forgetPassword}" method="post">
+                        <form action="#" th:action="@{/api/v1/reset}" method="post" th:object="${resetPasswordDTO}">
+                            <input type="hidden" th:name="token" th:value="${token}"/>
                             <div class="row gy-3 overflow-hidden">
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
-                                        <input type="email" class="form-control border-0 border-bottom rounded-0"
-                                               name="email" id="email" placeholder="Email" required>
-                                        <label for="email" class="form-label">Email</label>
+                                        <input type="password" class="form-control border-0 border-bottom rounded-0"
+                                               th:field="*{password}" id="password" placeholder="Password" required>
+                                        <label for="password" class="form-label">Password</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <input type="password" class="form-control border-0 border-bottom rounded-0"
+                                               th:field="*{confirmPassword}" id="confirmpassword"
+                                               placeholder="Confirm Password" required>
+                                        <label for="confirmpassword" class="form-label">Confirm Password</label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="d-grid">
-                                        <button class="btn btn-lg btn-dark rounded-0 fs-6" type="submit">Send Link</button>
+                                        <button class="btn btn-lg btn-dark rounded-0 fs-6" type="submit">Set Password
+                                        </button>
                                     </div>
                                 </div>
                             </div>

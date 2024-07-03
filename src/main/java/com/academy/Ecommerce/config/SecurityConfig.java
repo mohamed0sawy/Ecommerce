@@ -32,6 +32,7 @@ public class SecurityConfig {
                 config
                         .requestMatchers("/api/v1/").permitAll()
                         .requestMatchers("/api/v1/forgetPassword").permitAll()
+                        .requestMatchers("/api/v1/reset").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login ->
                         login
