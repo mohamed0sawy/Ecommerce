@@ -31,6 +31,10 @@ public class User {
     @Column(name = "confirmation_token")
     private String confirmationToken;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
