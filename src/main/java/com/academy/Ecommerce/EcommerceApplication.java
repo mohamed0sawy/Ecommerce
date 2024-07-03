@@ -1,6 +1,6 @@
 package com.academy.Ecommerce;
 
-import com.academy.Ecommerce.model.Customer;
+//import com.academy.Ecommerce.model.Customer;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.repository.RoleRepository;
 import com.academy.Ecommerce.repository.UserRepository;

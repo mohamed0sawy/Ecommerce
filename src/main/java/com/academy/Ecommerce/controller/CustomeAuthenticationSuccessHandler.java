@@ -1,8 +1,8 @@
 package com.academy.Ecommerce.controller;
 
-import com.academy.Ecommerce.model.Customer;
+//import com.academy.Ecommerce.model.Customer;
 import com.academy.Ecommerce.model.User;
-import com.academy.Ecommerce.service.CustomerService;
+//import com.academy.Ecommerce.service.CustomerService;
 import com.academy.Ecommerce.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomeAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final UserService userService;
-    private final CustomerService customerService;
+//    private final CustomerService customerService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -27,10 +27,10 @@ public class CustomeAuthenticationSuccessHandler implements AuthenticationSucces
         String username = authentication.getName();
         User user = userService.findUserByUsername(username);
         user.setLoginTries(0);
-        userService.saveUser(user);
-        Customer customer = customerService.findCustomerByName(username);
+        user = userService.saveUser(user);
+//        Customer customer = customerService.findCustomerByName(username);
         HttpSession session = request.getSession();
-        session.setAttribute("customer", customer);
+        session.setAttribute("user", user);
         response.sendRedirect(request.getContextPath() + "/api/v1/home");
     }
 }
