@@ -64,10 +64,8 @@ public class LoginController {
                                 BindingResult bindingResult, @RequestParam("token") String token, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("token", token);
-            // do you need to add resetPasswordDTO object to the model
             return "reset";
         }
-        System.out.println("passed binding result");
 
         String password = resetPasswordDTO.getPassword();
         String confirmPassword = resetPasswordDTO.getConfirmPassword();
@@ -77,17 +75,17 @@ public class LoginController {
             model.addAttribute("error", "passwordMismatch");
             return "reset";
         }
-        System.out.println("passed passwords equality");
 
         User user = userService.findUserByConfirmationToken(token);
         if (user == null) {
-            return "redirect:/api/v1/reset?token=" + token + "&error=userNotFound";
+            model.addAttribute("token", token);
+            model.addAttribute("error", "userNotFound");
+            return "reset";
         }
 
         user.setPassword(passwordEncoder.encode(password));
         user.setConfirmationToken(null);
         userService.saveUser(user);
-        System.out.println("passed user saved");
 
         return "redirect:/api/v1/reset?token=" + token + "&success";
     }

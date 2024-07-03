@@ -15,12 +15,17 @@
     <style>
         .password-conditions {
             margin-top: 2%;
-            color: red;
+            color: #6c757d;
             font-size: 88%;
         }
         .password-conditions p {
             text-align: left;
-            margin: 0 0 0 33%;
+            margin: 0 0 0 36%;
+        }
+        .error{
+            color:red;
+            font-size: 13px;
+            margin-top:-15px;
         }
     </style>
 </head>
@@ -37,8 +42,6 @@
                     <h5 class="text-center font-weight-bold m-0">Enter the new password.</h5>
                     <div class="password-conditions">
                         <p>Password must be at least 8 characters long.</p>
-                        <p>Password should contain at least one letter (uppercase or lowercase).</p>
-                        <p>Password cannot contain special characters like: +, -, %, &, $, #.</p>
                     </div>
                 </div>
             </div>
@@ -73,6 +76,10 @@
                             <input type="hidden" th:name="token" th:value="${token}"/>
                             <div class="row gy-3 overflow-hidden">
                                 <div class="col-12">
+                                    <div th:if="${#fields.hasErrors('password')}"
+                                         th:errors="*{password}"
+                                         class="error">
+                                    </div>
                                     <div class="form-floating mb-3">
                                         <input type="password" class="form-control border-0 border-bottom rounded-0"
                                                th:field="*{password}" id="password" placeholder="Password" required>
@@ -80,6 +87,10 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
+                                    <div th:if="${#fields.hasErrors('confirmPassword')}"
+                                         th:errors="*{confirmPassword}"
+                                         class="error">
+                                    </div>
                                     <div class="form-floating mb-3">
                                         <input type="password" class="form-control border-0 border-bottom rounded-0"
                                                th:field="*{confirmPassword}" id="confirmpassword"

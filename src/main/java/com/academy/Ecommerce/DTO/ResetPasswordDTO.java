@@ -10,13 +10,11 @@ import lombok.Setter;
 @Setter
 public class ResetPasswordDTO {
 
-//    @NotBlank(message = "Password is mandatory")
-//    @Size(min = 8, message = "Password must be at least 8 characters long")
-//    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[^!@#$%^&*+-\\\\]{8,}$",
-//            message = "Password must contain at least one letter and no special characters like +, -, %, &, $, #")
+    @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
-//    @NotBlank(message = "Confirm Password is mandatory")
+    @NotBlank(message = "Confirm Password is mandatory")
     private String confirmPassword;
 
 }
