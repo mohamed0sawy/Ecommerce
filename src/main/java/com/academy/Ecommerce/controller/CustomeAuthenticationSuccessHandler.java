@@ -25,7 +25,9 @@ public class CustomeAuthenticationSuccessHandler implements AuthenticationSucces
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         String username = authentication.getName();
-//        User user = userService.findUserByUsername(username);
+        User user = userService.findUserByUsername(username);
+        user.setLoginTries(0);
+        userService.saveUser(user);
         Customer customer = customerService.findCustomerByName(username);
         HttpSession session = request.getSession();
         session.setAttribute("customer", customer);

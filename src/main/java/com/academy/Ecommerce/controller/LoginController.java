@@ -66,25 +66,23 @@ public class LoginController {
             model.addAttribute("token", token);
             return "reset";
         }
-
         String password = resetPasswordDTO.getPassword();
         String confirmPassword = resetPasswordDTO.getConfirmPassword();
-
         if (!password.equals(confirmPassword)) {
             model.addAttribute("token", token);
             model.addAttribute("error", "passwordMismatch");
             return "reset";
         }
-
         User user = userService.findUserByConfirmationToken(token);
         if (user == null) {
             model.addAttribute("token", token);
             model.addAttribute("error", "userNotFound");
             return "reset";
         }
-
         user.setPassword(passwordEncoder.encode(password));
         user.setConfirmationToken(null);
+        user.setLocked(false);
+        user.setLoginTries(0);
         userService.saveUser(user);
 
         return "redirect:/api/v1/reset?token=" + token + "&success";

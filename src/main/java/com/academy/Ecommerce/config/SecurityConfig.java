@@ -7,6 +7,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
@@ -27,18 +28,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-                                           AuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception{
+                                           AuthenticationSuccessHandler customAuthenticationSuccessHandler,
+                                           AuthenticationFailureHandler customAuthenticationFailureHandler) throws Exception{
         http.authorizeHttpRequests(config ->
                 config
                         .requestMatchers("/api/v1/").permitAll()
                         .requestMatchers("/api/v1/forgetPassword").permitAll()
                         .requestMatchers("/api/v1/reset").permitAll()
+                        .requestMatchers("/api/v1/login").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login ->
                         login
                                 .loginPage("/api/v1/login")
                                 .loginProcessingUrl("/authenticateTheUser")
                                 .successHandler(customAuthenticationSuccessHandler)
+                                .failureHandler(customAuthenticationFailureHandler)
                                 .permitAll())
                 .logout(logout ->
                         logout

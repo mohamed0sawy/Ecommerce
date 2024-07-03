@@ -38,6 +38,12 @@
                                 Invalid Email or password
                             </div>
                         </div>
+                        <div th:if="${param.locked}">
+                            <div class="alert alert-danger" role="alert">
+                                The account is suspended. <br>
+                                please click on Forget Password and reset you password.
+                            </div>
+                        </div>
                         <div th:if="${param.logout}">
                             <div class="alert alert-success" role="alert">
                                 You have been logged out

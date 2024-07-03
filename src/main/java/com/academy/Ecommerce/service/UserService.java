@@ -5,6 +5,7 @@ import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.repository.RoleRepository;
 import com.academy.Ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,19 +22,19 @@ public class UserService implements UserDetailsService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
-    public User findUserByUsername(String username){
+    public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public User findUserByEmail(String email){
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public User findUserByConfirmationToken(String token){
+    public User findUserByConfirmationToken(String token) {
         return userRepository.findByConfirmationToken(token);
     }
 
-    public User saveUser(User user){
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 
@@ -42,6 +43,14 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email);
         if (user == null)
             throw new UsernameNotFoundException("user not found");
+
+        if (user.isLocked()) {
+            throw new LockedException("User account is locked");
+        }
+
+        user.setLoginTries(user.getLoginTries() + 1);
+        userRepository.save(user);
+
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
