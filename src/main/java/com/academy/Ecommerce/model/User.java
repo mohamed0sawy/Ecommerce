@@ -1,50 +1,83 @@
 package com.academy.Ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
-@Entity
-@Table(name = "users")
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@Entity
+@Table(name = "`user`")
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_name")
-    private String username;
-    @Column(name = "password")
-    private String password;
-    @Column(name = "email")
+
+    @NotEmpty
+    @Column(nullable = false)
+    private String firstName;
+
+    @NotEmpty
+    @Column(nullable = false)
+    private String lastName;
+
+    @NotEmpty
+    @Email
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(name = "enabled")
-    private boolean enabled;
-    @Column(name = "locked")
-    private boolean locked;
-    @Column(name = "login_tries")
-    private int loginTries;
-    @Column(name = "confirmation_token")
-    private String confirmationToken;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @NotEmpty
+    private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    List<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
+    private Role role;
 
-//    public User(String username, String password, boolean enabled) {
-//        this.username = username;
-//        this.password = password;
-//        this.enabled = enabled;
-//    }
+    public User(String firstName, String lastName, String email, String password, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.getRole().getName()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
-
