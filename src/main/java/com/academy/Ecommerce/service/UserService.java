@@ -12,5 +12,20 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
+    public User findUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    public User findUserByConfirmationToken(String token){
+        return userRepository.findByConfirmationToken(token);
+    }
+
+    public User saveUser(User user){
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(User user){
+        userRepository.deleteById(user.getId());
+    }
 
 }
