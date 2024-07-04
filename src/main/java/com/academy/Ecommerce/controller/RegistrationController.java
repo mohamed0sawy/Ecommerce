@@ -5,10 +5,13 @@ import com.academy.Ecommerce.model.Role;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.RoleService;
 import com.academy.Ecommerce.service.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,18 +39,13 @@ public class RegistrationController {
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute RegisterDTO registerDTO,
                                BindingResult bindingResult, Model model) {
-
-        System.out.println("before existed user ========================");
         User existedUser = userService.findUserByEmail(registerDTO.getEmail());
-        System.out.println("after existed user ==============================");
-        if (existedUser != null){
+        if (existedUser != null) {
             return "redirect:/api/v1/register?userFound";
         }
-
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-
         String password = registerDTO.getPassword();
         String confirmPassword = registerDTO.getConfirmPassword();
         if (!password.equals(confirmPassword)) {
@@ -55,7 +53,14 @@ public class RegistrationController {
             model.addAttribute("error", "passwordMismatch");
             return "registration";
         }
-        System.out.println("before createing user =================================");
+        User user = createUserFromDTO(registerDTO);
+        userService.saveUser(user);
+        sendConfirmationEmail(user);
+
+        return "redirect:/api/v1/register?success";
+    }
+
+    private User createUserFromDTO(RegisterDTO registerDTO) {
         User user = new User();
         user.setUsername(registerDTO.getUsername());
         user.setEmail(registerDTO.getEmail());
@@ -64,26 +69,36 @@ public class RegistrationController {
         user.setEnabled(false);
         String token = UUID.randomUUID().toString();
         user.setConfirmationToken(token);
-        System.out.println("before calling roles =====================================");
         Role role = roleService.findRoleByName("customer");
         user.setRoles(List.of(role));
-        userService.saveUser(user);
+        return user;
+    }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Confirm Account");
-        message.setText("Hello " + user.getUsername() + ",\n" +
-                "To activate your account, please click the link below : \n" +
-                "http://localhost:8080/api/v1/activate?token="+user.getConfirmationToken());
-        javaMailSender.send(message);
+    private void sendConfirmationEmail(User user) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
-        return "redirect:/api/v1/register?success";
+            String htmlMsg = String.format(
+                    "<p>Hello %s,</p>" +
+                            "<p>To activate your account, please click the link below:</p>" +
+                            "<p><a href='http://localhost:8080/api/v1/activate?token=%s'>Activate Account</a></p>",
+                    user.getUsername(), user.getConfirmationToken());
+
+            helper.setText(htmlMsg, true);
+            helper.setTo(user.getEmail());
+            helper.setSubject("Confirm Account");
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @GetMapping("/activate")
-    public String activate(@RequestParam("token") String token, Model model){
+    public String activate(@RequestParam("token") String token, Model model) {
         User user = userService.findUserByConfirmationToken(token);
-        if (user == null){
+        if (user == null) {
             model.addAttribute("activate", "expired");
             return "activate";
         }
@@ -95,7 +110,7 @@ public class RegistrationController {
     }
 
     @GetMapping("/del")
-    public void del(){
+    public void del() {
 //        User user = userService.findUserByEmail("motarek778899@gmail.com");
         User user = userService.findUserByEmail("sawy@mail.com");
         userService.deleteUser(user);
