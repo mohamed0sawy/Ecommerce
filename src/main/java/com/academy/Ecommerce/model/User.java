@@ -17,6 +17,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Getter
     @Column(name = "user_name")
     private String username;
     @Column(name = "password")
@@ -24,11 +25,11 @@ public class User {
     @Column(name = "email")
     private String email;
     @Column(name = "enabled")
-    private boolean enabled;
+    private Boolean enabled;
     @Column(name = "locked")
-    private boolean locked;
+    private Boolean locked;
     @Column(name = "login_tries")
-    private int loginTries;
+    private Integer loginTries;
     @Column(name = "confirmation_token")
     private String confirmationToken;
 
@@ -46,7 +47,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     List<Role> roles;
 
-//    public User(String username, String password, boolean enabled) {
+    //    public User(String username, String password, boolean enabled) {
 //        this.username = username;
 //        this.password = password;
 //        this.enabled = enabled;
