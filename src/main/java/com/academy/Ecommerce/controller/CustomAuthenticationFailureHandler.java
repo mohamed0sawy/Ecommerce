@@ -27,7 +27,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         }
         String email = request.getParameter("username");
         User user = userService.findUserByEmail(email);
-        if (user.getLoginTries() >= 6)
+        if (user.getLoginTries() >= 3)
             user.setLocked(true);
         userService.saveUser(user);
         response.sendRedirect(request.getContextPath() + "/api/v1/login?error");
