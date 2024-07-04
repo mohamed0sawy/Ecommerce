@@ -31,8 +31,7 @@ public class SettingsController {
     }
     @GetMapping("/name")
     public String name(HttpServletRequest request, Model model){
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = getUserFromSession(request);
         UserNameDTO userNameDTO = new UserNameDTO();
         userNameDTO.setUserName(user.getUsername());
         model.addAttribute("userNameDTO", userNameDTO);
@@ -57,8 +56,7 @@ public class SettingsController {
     }
     @GetMapping("/email")
     public String email(HttpServletRequest request, Model model){
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = getUserFromSession(request);
         EmailDTO emailDTO = new EmailDTO();
         emailDTO.setEmail(user.getEmail());
         model.addAttribute("emailDTO", emailDTO);
@@ -111,6 +109,12 @@ public class SettingsController {
         userService.saveUser(updatedUser);
         session.setAttribute("user", updatedUser);
         return "redirect:/api/v1/settings/password?success";
+    }
+
+    public User getUserFromSession(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        return user;
     }
 
 }
