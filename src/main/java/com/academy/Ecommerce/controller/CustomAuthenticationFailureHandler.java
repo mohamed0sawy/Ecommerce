@@ -1,5 +1,6 @@
 package com.academy.Ecommerce.controller;
 
+import com.academy.Ecommerce.exception.UserIsNotEnabledException;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.UserService;
 import jakarta.servlet.ServletException;
@@ -23,6 +24,10 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                                         AuthenticationException exception) throws IOException, ServletException {
         if (exception instanceof InternalAuthenticationServiceException) {
             response.sendRedirect(request.getContextPath() + "/api/v1/login?locked");
+            return;
+        }
+        if (exception instanceof UserIsNotEnabledException) {
+            response.sendRedirect(request.getContextPath() + "/api/v1/login?notEnabled");
             return;
         }
         String email = request.getParameter("username");

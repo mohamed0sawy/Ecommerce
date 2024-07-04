@@ -44,6 +44,11 @@
                                 please click on Forget Password and reset you password.
                             </div>
                         </div>
+                        <div th:if="${param.notEnabled}">
+                            <div class="alert alert-danger" role="alert">
+                                The account is not activated yet.
+                            </div>
+                        </div>
                         <div th:if="${param.logout}">
                             <div class="alert alert-success" role="alert">
                                 You have been logged out

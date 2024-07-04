@@ -1,5 +1,6 @@
 package com.academy.Ecommerce.service;
 
+import com.academy.Ecommerce.exception.UserIsNotEnabledException;
 import com.academy.Ecommerce.model.Role;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.repository.RoleRepository;
@@ -46,6 +47,10 @@ public class UserService implements UserDetailsService {
 
         if (user.isLocked()) {
             throw new LockedException("User account is locked");
+        }
+
+        if(!user.isEnabled()){
+            throw new UserIsNotEnabledException("user is not enabled");
         }
 
         user.setLoginTries(user.getLoginTries() + 1);
