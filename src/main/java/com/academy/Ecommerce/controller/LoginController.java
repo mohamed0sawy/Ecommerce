@@ -3,10 +3,13 @@ package com.academy.Ecommerce.controller;
 import com.academy.Ecommerce.DTO.ResetPasswordDTO;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,22 +37,43 @@ public class LoginController {
     }
 
     @PostMapping("/forgetPassword")
-    public String forgetPasswordEmail(@RequestParam("email") String email, Model model){
+    public String forgetPasswordEmail(@RequestParam("email") String email, Model model) {
         User user = userService.findUserByEmail(email);
-        if (user == null){
+
+        if (user == null) {
             return "redirect:/api/v1/forgetPassword?userNotFound";
         }
+
+        sendPasswordResetEmail(user);
+        userService.saveUser(user);
+
+        return "redirect:/api/v1/forgetPassword?emailSent";
+    }
+
+    private void sendPasswordResetEmail(User user) {
         String confirmationToken = UUID.randomUUID().toString();
         user.setConfirmationToken(confirmationToken);
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Reset Password");
-        message.setText("Hello " + user.getUsername() + ",\n" +
-                "To reset your password, please click the link below : \n" +
-                "http://localhost:8080/api/v1/reset?token="+user.getConfirmationToken());
-        javaMailSender.send(message);
-        userService.saveUser(user);
-        return "redirect:/api/v1/forgetPassword?emailSent";
+
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+            String htmlMsg = buildPasswordResetEmailContent(user);
+            helper.setText(htmlMsg, true);
+            helper.setTo(user.getEmail());
+            helper.setSubject("Reset Password");
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String buildPasswordResetEmailContent(User user) {
+        return String.format("<p>Hello %s,</p>" +
+                        "<p>To reset your password, please click the link below:</p>" +
+                        "<p><a href='http://localhost:8080/api/v1/reset?token=%s'>Reset Password</a></p>",
+                user.getUsername(), user.getConfirmationToken());
     }
 
     @GetMapping("/reset")
@@ -79,13 +103,14 @@ public class LoginController {
             model.addAttribute("error", "userNotFound");
             return "reset";
         }
+        updateUserPassword(user, resetPasswordDTO.getPassword());
+        return "redirect:/api/v1/reset?token=" + token + "&success";
+    }
+    private void updateUserPassword(User user, String password) {
         user.setPassword(passwordEncoder.encode(password));
         user.setConfirmationToken(null);
         user.setLocked(false);
         user.setLoginTries(0);
         userService.saveUser(user);
-
-        return "redirect:/api/v1/reset?token=" + token + "&success";
     }
-
 }

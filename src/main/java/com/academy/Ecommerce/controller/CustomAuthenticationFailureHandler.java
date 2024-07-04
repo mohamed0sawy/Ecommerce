@@ -22,19 +22,42 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
+
         if (exception instanceof InternalAuthenticationServiceException) {
-            response.sendRedirect(request.getContextPath() + "/api/v1/login?locked");
+            handleInternalAuthenticationServiceException(request, response, exception);
             return;
         }
-        if (exception instanceof UserIsNotEnabledException) {
-            response.sendRedirect(request.getContextPath() + "/api/v1/login?notEnabled");
-            return;
+
+        handleFailedLoginAttempt(request);
+
+        response.sendRedirect(request.getContextPath() + "/api/v1/login?error");
+    }
+
+    private void handleInternalAuthenticationServiceException(HttpServletRequest request, HttpServletResponse response,
+                                                              AuthenticationException exception) throws IOException {
+        String message = exception.getMessage();
+        String redirectUrl = null;
+
+        if ("User account is locked".equals(message)) {
+            redirectUrl = "/api/v1/login?locked";
+        } else if ("user is not enabled".equals(message)) {
+            redirectUrl = "/api/v1/login?notEnabled";
         }
+
+        if (redirectUrl != null) {
+            response.sendRedirect(request.getContextPath() + redirectUrl);
+        }
+    }
+
+    private void handleFailedLoginAttempt(HttpServletRequest request) {
         String email = request.getParameter("username");
         User user = userService.findUserByEmail(email);
-        if (user.getLoginTries() >= 3)
-            user.setLocked(true);
-        userService.saveUser(user);
-        response.sendRedirect(request.getContextPath() + "/api/v1/login?error");
+
+        if (user != null) {
+            if (user.getLoginTries() >= 3) {
+                user.setLocked(true);
+            }
+            userService.saveUser(user);
+        }
     }
 }
