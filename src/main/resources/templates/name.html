@@ -43,7 +43,7 @@
                                 UserName changed successfully.
                             </div>
                         </div>
-                        <form action="#" th:action="@{/api/v1/settings/name}" th:object="${userNameDTO}" method="post">
+                        <form action="#" th:action="@{/api/v1/profile/settings/name}" th:object="${userNameDTO}" method="post">
                             <div class="row gy-3 overflow-hidden">
                                 <div class="col-12">
                                     <div class="form-floating mb-3">
@@ -62,7 +62,7 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="d-grid">
-                                        <a th:href="@{/api/v1/settings}" class="btn btn-lg btn-secondary rounded-0 fs-6" type="submit">Settings</a>
+                                        <a th:href="@{/api/v1/profile/settings}" class="btn btn-lg btn-secondary rounded-0 fs-6" type="submit">Settings</a>
                                     </div>
                                 </div>
                             </div>

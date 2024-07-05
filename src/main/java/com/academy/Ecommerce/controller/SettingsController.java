@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/api/v1/settings")
+@RequestMapping("/api/v1/profile/settings")
 @RequiredArgsConstructor
 public class SettingsController {
     private final UserService userService;
@@ -52,7 +52,7 @@ public class SettingsController {
         updatedUser.setUsername(newUserName);
         userService.saveUser(updatedUser);
         session.setAttribute("user", updatedUser);
-        return "redirect:/api/v1/settings/name?success";
+        return "redirect:/api/v1/profile/settings/name?success";
     }
     @GetMapping("/email")
     public String email(HttpServletRequest request, Model model){
@@ -77,7 +77,7 @@ public class SettingsController {
         updatedUser.setEmail(newEmail);
         userService.saveUser(updatedUser);
         session.setAttribute("user", updatedUser);
-        return "redirect:/api/v1/settings/email?success";
+        return "redirect:/api/v1/profile/settings/email?success";
     }
 
     @GetMapping("/password")
@@ -97,18 +97,18 @@ public class SettingsController {
         String newPassword = passwordDTO.getNewPassword();
         String confirmPassword = passwordDTO.getConfirmPassword();
         if (!newPassword.equals(confirmPassword)){
-            return "redirect:/api/v1/settings/password?misMatchPass";
+            return "redirect:/api/v1/profile/settings/password?misMatchPass";
         }
         HttpSession session = request.getSession();
         User existingUser = (User) session.getAttribute("user");
         User updatedUser = userService.findUserByEmail(existingUser.getEmail());
         if (!passwordEncoder.matches(oldPassword, updatedUser.getPassword())) {
-            return "redirect:/api/v1/settings/password?wrongPassword";
+            return "redirect:/api/v1/profile/settings/password?wrongPassword";
         }
         updatedUser.setPassword(passwordEncoder.encode(newPassword));
         userService.saveUser(updatedUser);
         session.setAttribute("user", updatedUser);
-        return "redirect:/api/v1/settings/password?success";
+        return "redirect:/api/v1/profile/settings/password?success";
     }
 
     public User getUserFromSession(HttpServletRequest request){
