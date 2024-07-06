@@ -20,6 +20,10 @@ public class CartItemService {
         return cartItemRepository.findByCartId(cartId);
     }
 
+    public CartItem findCartItemByCartIdAndProductId(Long cartId, Long productId){
+        return cartItemRepository.findByCartIdAndProductId(cartId, productId);
+    }
+
     public CartItem saveCartItem(CartItem cartItem){
         return cartItemRepository.save(cartItem);
     }
@@ -28,19 +32,19 @@ public class CartItemService {
         cartItemRepository.deleteById(id);
     }
 
-    public List<CartItem> cleanCartItems(Long cartId) {
-        List<CartItem> cartItems = findCartItemByCartId(cartId);
-        Iterator<CartItem> iterator = cartItems.iterator();
-        while (iterator.hasNext()) {
-            CartItem cartItem = iterator.next();
-            Product product = cartItem.getProduct();
-            if (product == null) {
-                deleteCartItemById(cartItem.getId());
-                iterator.remove();
-            }
-        }
-        return cartItems;
-    }
+//    public List<CartItem> cleanCartItems(Long cartId) {
+//        List<CartItem> cartItems = findCartItemByCartId(cartId);
+//        Iterator<CartItem> iterator = cartItems.iterator();
+//        while (iterator.hasNext()) {
+//            CartItem cartItem = iterator.next();
+//            Product product = cartItem.getProduct();
+//            if (product == null) {
+//                deleteCartItemById(cartItem.getId());
+//                iterator.remove();
+//            }
+//        }
+//        return cartItems;
+//    }
 
     public void addCartItem(Cart cart, Product product, int quantity) {
         CartItem cartItem = new CartItem();
@@ -48,5 +52,10 @@ public class CartItemService {
         cartItem.setProduct(product);
         cartItem.setQuantity(new Quantity(quantity));
         saveCartItem(cartItem);
+    }
+    public void incrementQuantityByOne(Cart cart, Product product) {
+        CartItem cartItem = findCartItemByCartIdAndProductId(cart.getId(), product.getId());
+        cartItem.setQuantity(new Quantity(cartItem.getQuantity().value() + 1));
+        cartItemRepository.save(cartItem);
     }
 }

@@ -1,6 +1,5 @@
 package com.academy.Ecommerce.controller;
 
-import com.academy.Ecommerce.domainPrimitive.Quantity;
 import com.academy.Ecommerce.model.Cart;
 import com.academy.Ecommerce.model.CartItem;
 import com.academy.Ecommerce.model.Product;
@@ -17,9 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/v1/cart")
@@ -30,20 +27,29 @@ public class CartController {
     private final ProductService productService;
 
     @GetMapping
-    public String cart(HttpServletRequest request, Model model){
+    public String cart(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         User existingUser = (User) session.getAttribute("user");
         if (existingUser == null) {
             return "redirect:/api/v1/login";
         }
         Cart cart = cartService.findCartByUserId(existingUser.getId());
-        List<CartItem> cartItems = cartItemService.cleanCartItems(cart.getId());
+        List<CartItem> cartItems = cartItemService.findCartItemByCartId(cart.getId());
+        double totalPrice = 0;
+        for (CartItem cartItem : cartItems) {
+            totalPrice += cartItem.getQuantity().value() * cartItem.getProduct().getPrice();
+        }
+        double totalPriceWithShopping = totalPrice + 30.0;
+        String formattedTotalPrice = String.format("%.2f", totalPrice);
+        String formattedTotalPriceWithShopping = String.format("%.2f", totalPriceWithShopping);
+        model.addAttribute("totalPrice", formattedTotalPrice);
+        model.addAttribute("totalPriceWithShopping", formattedTotalPriceWithShopping);
         model.addAttribute("cartItems", cartItems);
         return "cart";
     }
 
     @GetMapping("/add")
-    public String addToCart(@RequestParam("product_id") Long productId, HttpServletRequest request){
+    public String addToCart(@RequestParam("product_id") Long productId, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User existingUser = (User) session.getAttribute("user");
         if (existingUser == null) {
@@ -51,8 +57,19 @@ public class CartController {
         }
         Cart cart = cartService.findCartByUserId(existingUser.getId());
         Product product = productService.findProductById(productId).get();
-        cartItemService.addCartItem(cart, product, 1);
+        CartItem cartItem = cartItemService.findCartItemByCartIdAndProductId(cart.getId(), product.getId());
+        if (cartItem == null) {
+            cartItemService.addCartItem(cart, product, 1);
+        } else {
+            cartItemService.incrementQuantityByOne(cart, product);
+        }
         return "redirect:/api/v1/main";
+    }
+
+    @GetMapping("/remove")
+    public String removeItemFromCart(@RequestParam("itemId") Long cartItemId){
+        cartItemService.deleteCartItemById(cartItemId);
+        return "redirect:/api/v1/cart";
     }
 
 }
