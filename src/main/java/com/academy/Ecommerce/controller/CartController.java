@@ -12,9 +12,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/v1/cart")
@@ -25,7 +30,15 @@ public class CartController {
     private final ProductService productService;
 
     @GetMapping
-    public String cart(){
+    public String cart(HttpServletRequest request, Model model){
+        HttpSession session = request.getSession();
+        User existingUser = (User) session.getAttribute("user");
+        if (existingUser == null) {
+            return "redirect:/api/v1/login";
+        }
+        Cart cart = cartService.findCartByUserId(existingUser.getId());
+        List<CartItem> cartItems = cartItemService.cleanCartItems(cart.getId());
+        model.addAttribute("cartItems", cartItems);
         return "cart";
     }
 
@@ -33,13 +46,12 @@ public class CartController {
     public String addToCart(@RequestParam("product_id") Long productId, HttpServletRequest request){
         HttpSession session = request.getSession();
         User existingUser = (User) session.getAttribute("user");
+        if (existingUser == null) {
+            return "redirect:/api/v1/login";
+        }
         Cart cart = cartService.findCartByUserId(existingUser.getId());
         Product product = productService.findProductById(productId).get();
-        CartItem cartItem = new CartItem();
-        cartItem.setCart(cart);
-        cartItem.setProduct(product);
-        cartItem.setQuantity(new Quantity(1));
-        cartItemService.saveCartItem(cartItem);
+        cartItemService.addCartItem(cart, product, 1);
         return "redirect:/api/v1/main";
     }
 
