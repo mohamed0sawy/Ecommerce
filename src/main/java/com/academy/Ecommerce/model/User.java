@@ -47,6 +47,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     List<Role> roles;
 
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
     //    public User(String username, String password, boolean enabled) {
 //        this.username = username;
 //        this.password = password;
