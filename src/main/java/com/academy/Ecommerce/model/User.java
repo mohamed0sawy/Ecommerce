@@ -25,11 +25,11 @@ public class User {
     @Column(name = "email")
     private String email;
     @Column(name = "enabled")
-    private Boolean enabled;
+    private boolean enabled;
     @Column(name = "locked")
-    private Boolean locked;
+    private boolean locked;
     @Column(name = "login_tries")
-    private Integer loginTries;
+    private int loginTries;
     @Column(name = "confirmation_token")
     private String confirmationToken;
 

@@ -8,7 +8,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,15 +22,19 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Street is required")
     @Column(name = "street")
     private String street;
 
+    @NotBlank(message = "City is required")
     @Column(name = "city")
     private String city;
 
+    @NotBlank(message = "State is required")
     @Column(name = "state")
     private String state;
 
+    @Pattern(regexp = "\\d{5}", message = "Zip Code must be 5 digits")
     @Column(name = "zip_code")
     private String zipCode;
 

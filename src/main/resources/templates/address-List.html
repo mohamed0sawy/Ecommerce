@@ -19,6 +19,8 @@
             <th>State</th>
             <th>Zip Code</th>
             <th>User Name</th>
+            <th>Update</th>
+            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -29,6 +31,8 @@
             <td th:text="${address.state}"></td>
             <td th:text="${address.zipCode}"></td>
             <td th:text="${address.user != null ? address.user.username : 'Unknown'}"></td>
+            <td><a th:href="@{/api/addresses/update/{id}(id=${address.id})}" class="btn btn-primary">Update</a></td>
+            <td><a th:href="@{/api/addresses/delete/{id}(id=${address.id})}" class="btn btn-danger" onclick="return confirmDelete(event)">Delete</a></td>
         </tr>
         </tbody>
     </table>
@@ -37,6 +41,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script th:inline="javascript">
+    function confirmDelete(addressId) {
+        if (confirm("Are you sure you want to delete this address ?")) {
+            document.getElementById("deleteForm").submit();
+        }
+    }
+</script>
 
 </body>
 </html>

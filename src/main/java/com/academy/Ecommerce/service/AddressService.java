@@ -42,16 +42,22 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    public Address updateAddressById(Address address, Long id){
-        Optional<Address> existingAddressOptional = addressRepository.findById(id);
-        if(existingAddressOptional.isPresent()){
-            Address existingAddress = existingAddressOptional.get();
-            existingAddress.setId(id);
-            return addressRepository.save(existingAddress);
+    public Address updateAddressByUserId(Address address, Long userId) {
+        // Find all addresses of the user
+        List<Address> userAddresses = addressRepository.findByUserId(userId);
+
+        // Update the address in the list (assuming you have the logic to uniquely identify the address)
+        for (Address userAddress : userAddresses) {
+            if (userAddress.getId().equals(address.getId())) {
+                userAddress.setStreet(address.getStreet());
+                userAddress.setCity(address.getCity());
+                userAddress.setState(address.getState());
+                userAddress.setZipCode(address.getZipCode());
+                // Optionally, update other fields as needed
+                return addressRepository.save(userAddress);
+            }
         }
-        else{
-            throw new NotFoundException(" No Address found with ID: " + id);
-        }
+        throw new NotFoundException("Address with ID " + address.getId() + " not found for User ID " + userId);
     }
 
     public String deleteAddressById(Long id){
@@ -60,6 +66,14 @@ public class AddressService {
             throw new NotFoundException(" No Address found with ID: " + id);
         }
         addressRepository.deleteById(id);
-        return " Book with ID " + id + " deleted successfully ";
+        return " Address with ID " + id + " deleted successfully ";
+    }
+
+    public List<Address> getAddressesByUserId(Long userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isEmpty()){
+            throw new NotFoundException("User with ID " + userId + " not found");
+        }
+        return addressRepository.findByUserId(userId);
     }
 }
