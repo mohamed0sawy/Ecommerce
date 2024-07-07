@@ -31,24 +31,57 @@
       margin-bottom: 20px;
     }
 
+    .navbar {
+      background-color: #40526D; /* Dark background color */
+    }
+
+    .navbar-brand, .navbar-nav .nav-link {
+      color: #ffffff; /* White text color */
+    }
+
+    .navbar-brand:hover, .navbar-nav .nav-link:hover {
+      color: #f8f9fa; /* Lighter text color on hover */
+    }
+
+    .search-form {
+      margin-right: 20px; /* Adjust spacing between search and nav links */
+    }
+
   </style>
 </head>
 <body>
 <header>
-  <h1>E-Commerce Website</h1>
-  <form th:action="@{/search}" method="get" class="form-inline my-2 my-lg-0">
-    <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="Search products...">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-  </form>
-  <a href="/profile">
-    <img src="/images/avatar.png" alt="Profile" class="avatar">
-  </a></header>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">E-Commerce Website</a>
+      <form th:action="@{/search}" method="get" class="form-inline my-2 my-lg-0 search-form">
+        <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="Search products...">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/products}">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/categories}">Categories</a>
+          </li>
+        </ul>
+      </div>
+      <a href="/profile">
+        <img src="/images/avatar.png" alt="Profile" class="avatar">
+      </a>
+    </div>
+  </nav>
+</header>
 
 <nav class="nav justify-content-center my-3">
   <a class="nav-link" th:href="@{/}">All Products</a>
   <li th:each="category : ${categories}" class="nav-item">
     <a class="nav-link" th:href="@{/filter(category=${category})}" th:text="${category}"></a>
   </li>
+<!--  <th:block th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">-->
+
 </nav>
 
 <main class="container">
