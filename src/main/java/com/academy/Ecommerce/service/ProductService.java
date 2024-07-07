@@ -18,8 +18,31 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<String> getAllCategories() {
-        return productRepository.findAllCategories();
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+
+    public void updateProduct(Long id, Product updatedProduct) {
+        Product existingProduct = productRepository.findById(id).orElse(null);
+        if (existingProduct != null) {
+            existingProduct.setName(updatedProduct.getName());
+            existingProduct.setDescription(updatedProduct.getDescription());
+            existingProduct.setCategory(updatedProduct.getCategory());
+            existingProduct.setPrice(updatedProduct.getPrice());
+            existingProduct.setStock(updatedProduct.getStock());
+            if (updatedProduct.getImageUrl() != null) {
+                existingProduct.setImageUrl(updatedProduct.getImageUrl());
+            }
+            productRepository.save(existingProduct);
+        }
     }
 
     public List<Product> searchProducts(String keyword) {
@@ -27,6 +50,6 @@ public class ProductService {
     }
 
     public List<Product> filterProductsByCategory(String category) {
-        return productRepository.findByCategory(category);
+        return productRepository.findByCategoryName(category);
     }
 }
