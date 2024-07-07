@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,9 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<Map<String, Object>> checkout(@RequestBody List<CartItemUpdateDto> cartItemUpdates) {
+    public ResponseEntity<Map<String, Object>> checkout(@RequestBody List<CartItemUpdateDto> cartItemUpdates,
+                                                        HttpServletRequest request) {
+        List<CartItem> checkedCartItems = new ArrayList<>();
         for (CartItemUpdateDto cartItemUpdate : cartItemUpdates) {
             CartItem cartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId()).get();
             Product product = productService.findProductById(cartItem.getProduct().getId()).get();
@@ -95,15 +98,16 @@ public class CartController {
         for (CartItemUpdateDto cartItemUpdate : cartItemUpdates) {
             CartItem cartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId()).get();
             cartItem.setQuantity(new Quantity(cartItemUpdate.getQuantity()));
+            checkedCartItems.add(cartItem);
             cartItemService.saveCartItem(cartItem);
         }
+        HttpSession session = request.getSession();
+        session.setAttribute("checkedCartItems", checkedCartItems);
+        User existingUser = (User) session.getAttribute("user");
+        Long userId = existingUser.getId();
+        String redirectUrl = "/api/v1/Address/list?user_id=" + userId;
 
-        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/api/v1/cart/checkout/successFromController").build();
-    }
-
-    @GetMapping("/checkout/successFromController")
-    public String sfc(){
-        return "success";
+        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
     }
 
 }
