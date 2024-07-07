@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,10 @@ public class CartItemService {
 
     public List<CartItem> findCartItemByCartId(Long cartId){
         return cartItemRepository.findByCartId(cartId);
+    }
+
+    public Optional<CartItem> findCartItemByCartItemId(Long id){
+        return cartItemRepository.findById(id);
     }
 
     public CartItem findCartItemByCartIdAndProductId(Long cartId, Long productId){

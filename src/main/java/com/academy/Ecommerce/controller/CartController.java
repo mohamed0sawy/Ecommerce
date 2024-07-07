@@ -1,5 +1,7 @@
 package com.academy.Ecommerce.controller;
 
+import com.academy.Ecommerce.DTO.CartItemUpdateDto;
+import com.academy.Ecommerce.domainPrimitive.Quantity;
 import com.academy.Ecommerce.model.Cart;
 import com.academy.Ecommerce.model.CartItem;
 import com.academy.Ecommerce.model.Product;
@@ -10,13 +12,16 @@ import com.academy.Ecommerce.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/v1/cart")
@@ -70,6 +75,35 @@ public class CartController {
     public String removeItemFromCart(@RequestParam("itemId") Long cartItemId){
         cartItemService.deleteCartItemById(cartItemId);
         return "redirect:/api/v1/cart";
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<Map<String, Object>> checkout(@RequestBody List<CartItemUpdateDto> cartItemUpdates) {
+        for (CartItemUpdateDto cartItemUpdate : cartItemUpdates) {
+            CartItem cartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId()).get();
+            Product product = productService.findProductById(cartItem.getProduct().getId()).get();
+
+            if (product.getStock() < cartItemUpdate.getQuantity()) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", "Insufficient stock for product: " + product.getName() +
+                        ", only " + product.getStock() + " items in stock at the moment.");
+                return ResponseEntity.ok(response);
+            }
+        }
+
+        for (CartItemUpdateDto cartItemUpdate : cartItemUpdates) {
+            CartItem cartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId()).get();
+            cartItem.setQuantity(new Quantity(cartItemUpdate.getQuantity()));
+            cartItemService.saveCartItem(cartItem);
+        }
+
+        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/api/v1/cart/checkout/successFromController").build();
+    }
+
+    @GetMapping("/checkout/successFromController")
+    public String sfc(){
+        return "success";
     }
 
 }
