@@ -2,13 +2,10 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.model.Category;
 import com.academy.Ecommerce.model.Product;
-import com.academy.Ecommerce.repository.CategoryRepository;
-import com.academy.Ecommerce.repository.ProductRepository;
 import com.academy.Ecommerce.service.CategoryService;
 import com.academy.Ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/products")
@@ -38,7 +34,7 @@ public class ProductController {
     public String listProducts(Model model) {
         List<Product> products = productService.getAllProducts();
         model.addAttribute("products", products);
-        return "product/list";
+        return "index";
     }
 
     @GetMapping("/create")
@@ -119,4 +115,15 @@ public class ProductController {
         productService.deleteProduct(id);
         return "redirect:/products";
     }
+    @GetMapping("/{id}")
+    public String showProductDetails(@PathVariable Long id, Model model) {
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            throw new IllegalArgumentException("Invalid product Id:" + id);
+
+        }
+        model.addAttribute("product", product);
+        return "index";
+    }
+
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{/js/content-script.js}"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header layout:fragment="header">
+    <div layout:insert="~{fragments/searchbar}"></div>
+</header>
+
+<section layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Include the sidebar navigation fragment -->
+            <div class="col-md-3 ms-sm-auto col-lg-3 px-md-4 no-top-margin" layout:insert="~{fragments/sidebar-filter}"></div>
+            <main class="col-md-9 ms-sm-auto col-lg-9 px-md-4 no-top-margin">
+                <div class="row">
+                    <div class="col-md-4 product-card" th:each="product : ${pagedProducts}">
+                        <a class="card product-card product-link text-decoration-none text-dark"
+                           th:href="@{/products/{id}(id=${product.id})}">
+                            <img alt="Product Image" class="card-img-top product-img" th:src="@{${product.imageUrl}}">
+                            <div class="card-body">
+                                <h5 class="card-title product-title text-center" th:text="${product.name}"></h5>
+                                <p class="card-text product-description" th:text="${product.description}"></p>
+                                <p class="card-text font-weight-bold product-price" th:text="'EGP' + ${product.price}"></p>
+                                <a class="btn btn-primary btn-add-to-cart" href="#">Add to Cart</a>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="pagination-container mt-4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${pagedProducts.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/(page=0)}">First</a>
+                            </li>
+                            <li class="page-item" th:classappend="${pagedProducts.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/(page=${pagedProducts.number - 1})}">Previous</a>
+                            </li>
+                            <li th:classappend="${page == pagedProducts.number} ? ' active' : ''"
+                                th:each="page : ${#numbers.sequence(0, pagedProducts.totalPages - 1)}">
+                                <a class="page-link" th:href="@{/(page=${page})}" th:text="${page + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${pagedProducts.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/(page=${pagedProducts.number + 1})}">Next</a>
+                            </li>
+                            <li class="page-item" th:classappend="${pagedProducts.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/(page=${pagedProducts.totalPages - 1})}">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </main>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
