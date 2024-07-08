@@ -18,7 +18,6 @@ public class profileController {
     public String profile(HttpServletRequest request, Model model){
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        System.out.println("user : " + user.getUsername() + " ====================================================");
         model.addAttribute("user", user);
         return "profile";
     }
