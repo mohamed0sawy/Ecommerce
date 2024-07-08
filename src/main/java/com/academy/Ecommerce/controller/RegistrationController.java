@@ -108,12 +108,12 @@ public class RegistrationController {
         model.addAttribute("activate", "success");
         return "activate";
     }
-
-    @GetMapping("/del")
-    public void del() {
-//        User user = userService.findUserByEmail("motarek778899@gmail.com");
-        User user = userService.findUserByEmail("sawy@mail.com");
-        userService.deleteUser(user);
-    }
+//
+//    @GetMapping("/del")
+//    public void del() {
+////        User user = userService.findUserByEmail("motarek778899@gmail.com");
+//        User user = userService.findUserByEmail("sawy@mail.com");
+//        userService.deleteUser(user);
+//    }
 
 }

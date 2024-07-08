@@ -65,6 +65,13 @@
 .no-top-margin {
     margin-top: 0 !important;
 }
+.card {
+    width: 444px;
+}
+
+body {
+    background: #eee;
+}
 
 /*.product-img {*/
 /*    width: 100%;*/

@@ -3,9 +3,6 @@ package com.academy.Ecommerce.config;
 import com.academy.Ecommerce.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,6 +36,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/forgetPassword").permitAll()
                         .requestMatchers("/api/v1/reset").permitAll()
                         .requestMatchers("/api/v1/login").permitAll()
+                        .requestMatchers("/api/v1/register").permitAll()
+                        .requestMatchers("/api/v1/activate").permitAll()
+                        .requestMatchers("/api/v1/del").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login ->
                         login
@@ -54,4 +54,5 @@ public class SecurityConfig {
                                 .logoutSuccessUrl("/api/v1/login"));
         return http.build();
     }
+
 }

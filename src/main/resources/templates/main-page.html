@@ -5,33 +5,81 @@
 <head>
     <script th:src="@{/js/content-script.js}"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+            width: 100%; /* Ensure card takes full width of its container */
+            padding: 15px; /* Add padding inside the card */
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+        .star {
+            color: orange;
+        }
+        .bg-cart {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .card-body {
+            height: 200px; /* Adjust as needed */
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
 <header layout:fragment="header">
     <div layout:insert="~{fragments/searchbar}"></div>
 </header>
-
 <section layout:fragment="content">
     <div class="container-fluid">
         <div class="row">
-            <!-- Include the sidebar navigation fragment -->
-            <div class="col-md-3 ms-sm-auto col-lg-3 px-md-4 no-top-margin" layout:insert="~{fragments/sidebar-filter}"></div>
-            <main class="col-md-9 ms-sm-auto col-lg-9 px-md-4 no-top-margin">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="p-3 bg-light position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/}">All Products</a>
+                        </li>
+                        <li th:each="category : ${categories}" class="nav-item">
+                            <a class="nav-link" th:href="@{/filter(category=${category})}" th:text="${category}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Product Cards -->
+            <div class="col-md-9 col-lg-10">
                 <div class="row">
-                    <div class="col-md-4 product-card" th:each="product : ${pagedProducts}">
-                        <a class="card product-card product-link text-decoration-none text-dark"
-                           th:href="@{/products/{id}(id=${product.id})}">
-                            <img alt="Product Image" class="card-img-top product-img" th:src="@{${product.imageUrl}}">
+                    <div class="col-md-4 mt-2" th:each="product : ${pagedProducts}">
+                        <div  class="card">
                             <div class="card-body">
-                                <h5 class="card-title product-title text-center" th:text="${product.name}"></h5>
-                                <p class="card-text product-description" th:text="${product.description}"></p>
-                                <p class="card-text font-weight-bold product-price" th:text="'EGP' + ${product.price}"></p>
-                                <a class="btn btn-primary btn-add-to-cart" href="#">Add to Cart</a>
+                                <div class="card-img-actions">
+                                    <img th:src="@{${product.imageUrl}}" class="card-img img-fluid" width="96"
+                                         height="150" alt="Product Image">
+                                </div>
                             </div>
-                        </a>
+                            <div class="card-body bg-light text-center">
+                                <div class="mb-2">
+                                    <h6 class="font-weight-semibold mb-2">
+                                        <a th:href="@{/products/{id}(id=${product.id})}" class="text-default mb-2" th:text="${product.name}"></a>
+                                    </h6>
+                                    <a th:href="@{/filter(category=${product.category.getName()})}" class="text-muted" th:text="${product.category.getName()}"></a>
+                                </div>
+                                <h3 class="mb-0 font-weight-semibold" th:text="'$ ' + ${product.price}"></h3>
+                                <button type="button" class="btn bg-cart"><i
+                                        class="fa fa-cart-plus mr-2"></i> Add to cart</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Pagination -->
                 <div class="pagination-container mt-4">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">
@@ -54,11 +102,10 @@
                         </ul>
                     </nav>
                 </div>
-            </main>
+            </div>
         </div>
     </div>
 </section>
-
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
