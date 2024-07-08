@@ -1,7 +1,6 @@
 package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.model.Category;
-import com.academy.Ecommerce.model.Product;
 import com.academy.Ecommerce.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,7 +21,7 @@ public class CategoryController {
     @GetMapping
     public String listCategories(Model model) {
         model.addAttribute("categories", categoryService.findAll());
-        return "category/list";
+        return "category/index";
     }
 
     @GetMapping("/create")
