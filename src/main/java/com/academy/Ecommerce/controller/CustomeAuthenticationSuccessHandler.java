@@ -31,6 +31,6 @@ public class CustomeAuthenticationSuccessHandler implements AuthenticationSucces
 //        Customer customer = customerService.findCustomerByName(username);
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
-        response.sendRedirect(request.getContextPath() + "/api/v1/home");
+        response.sendRedirect(request.getContextPath() + "/api/v1/profile");
     }
 }
