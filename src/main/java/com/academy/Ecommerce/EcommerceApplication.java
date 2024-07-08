@@ -55,7 +55,6 @@ public class EcommerceApplication {
 //			user2.setCustomer(new Customer(user2.getUsername()));
 //
 //			userRepository.saveAllAndFlush(List.of(user1, user2));
-//
 //		};
 //	}
 //	@Bean
