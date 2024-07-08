@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>My E-Commerce Site</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <style>
+        .product-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        .product-card {
+            max-width: 600px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        .product-details {
+            margin-top: 20px;
+        }
+        .product-info {
+            text-align: center;
+        }
+        .btn-add-to-cart {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="content">
+
+<div class="container product-details">
+    <div class="card product-card">
+        <div class="card-header">
+            <h1 th:text="${product.name}">Product Name</h1>
+        </div>
+        <div class="card-body">
+            <img th:src="@{${product.imageUrl}}" class="img-fluid product-img" alt="Product Image">
+            <div class="product-info">
+                <p th:text="${product.description}">Product Description</p>
+                <h3 th:text="'EGP ' + ${product.price}">Product Price</h3>
+                <button class="btn btn-primary btn-add-to-cart">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
