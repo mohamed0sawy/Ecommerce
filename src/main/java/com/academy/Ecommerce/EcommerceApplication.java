@@ -40,7 +40,7 @@ public class EcommerceApplication {
 //			user1.setUsername("user");
 //			user1.setEmail("user@mail.com");
 //			user1.setEnabled(true);
-//			user1.setLocked(true);
+//			user1.setLocked(false);
 //			user1.setPassword(passwordEncoder.encode("123"));
 //			user1.setRoles(List.of(role1));
 //			user1.setCustomer(new Customer(user1.getUsername()));

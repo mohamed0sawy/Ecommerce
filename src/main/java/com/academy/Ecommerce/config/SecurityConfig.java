@@ -36,6 +36,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/forgetPassword").permitAll()
                         .requestMatchers("/api/v1/reset").permitAll()
                         .requestMatchers("/api/v1/login").permitAll()
+                        .requestMatchers("/api/v1/register").permitAll()
+                        .requestMatchers("/api/v1/activate").permitAll()
+                        .requestMatchers("/api/v1/del").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login ->
                         login
@@ -51,4 +54,5 @@ public class SecurityConfig {
                                 .logoutSuccessUrl("/api/v1/login"));
         return http.build();
     }
+
 }
