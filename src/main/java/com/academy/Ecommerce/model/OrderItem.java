@@ -24,6 +24,6 @@ public class OrderItem {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(name = "total_price", nullable = false)
-    private double totalPrice;
+//    @Column(name = "total_price", nullable = false)
+//    private double totalPrice;
 }

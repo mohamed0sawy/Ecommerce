@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
+//@Setter
 @Getter
 @Entity
 @Table(name = "orders")
@@ -26,8 +26,13 @@ public class Order {
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
 
-    @Column(name = "total_price", nullable = false)
-    private double totalPrice;
+    @Column(name = "total_price")
+    private Double totalPrice;
+
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     @Column(name= "payment_method", nullable = false)
     private String paymentMethod;

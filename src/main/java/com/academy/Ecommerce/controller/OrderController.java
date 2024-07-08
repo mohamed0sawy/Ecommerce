@@ -19,7 +19,7 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public String getAllAddresses(Model model){
+    public String getAllOrders(Model model){
         List<Order> AllOrders = orderService.getAllOrders();
         model.addAttribute("allOrders", AllOrders);
         return "orders-List";
