@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{/js/content-script.js}"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${admin.id == null} ? 'Add Admin' : 'Edit Admin'"></h1>
+    <form th:action="@{/admin/add}" th:object="${admin}" method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control" th:field="*{username}" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="form-control" th:field="*{password}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+</body>
+</html>
