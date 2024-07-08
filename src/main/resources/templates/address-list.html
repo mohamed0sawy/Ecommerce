@@ -148,7 +148,7 @@
                                                                 </button>
                                                             </div>
 
-                                                            <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                                                            <button type="submit" id="continue-button" data-mdb-button-init data-mdb-ripple-init
                                                                     class="btn btn-dark btn-block btn-lg" style="margin-top:50px"
                                                                     data-mdb-ripple-color="dark">Continue
                                                             </button>
@@ -170,6 +170,30 @@
         </div>
     </div>
 </section>
+
+
+<script>
+    function enableContinueButton() {
+        var radios = document.getElementsByName('addressId');
+        var continueButton = document.getElementById('continue-button');
+
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                continueButton.disabled = false;
+                return;
+            }
+        }
+        continueButton.disabled = true;
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var radios = document.getElementsByName('addressId');
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].addEventListener('change', enableContinueButton);
+        }
+        enableContinueButton();
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
