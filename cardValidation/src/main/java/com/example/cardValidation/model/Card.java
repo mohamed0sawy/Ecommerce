@@ -15,8 +15,8 @@ public class Card {
     private Long id;
 
     @NonNull
-    @Column(length = 16)
-    private String number;
+    @Column(length = 16, unique = true)
+    private String cardNumber;
 
     @NonNull
     private Long pin;

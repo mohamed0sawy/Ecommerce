@@ -1,5 +1,6 @@
 package com.example.cardValidation.service;
 
+import com.example.cardValidation.client.PaymentClient;
 import com.example.cardValidation.exception.ApiError;
 import com.example.cardValidation.model.Card;
 import com.example.cardValidation.model.CardStatus;
@@ -13,28 +14,52 @@ import org.springframework.stereotype.Service;
 public class CardService {
 
     private final CardRepository cardRepository;
+    private final PaymentClient paymentClient;
 
-    public boolean validateCard(String cardNumber, Long pin, Long cvc, Long expMonth, Long expYear) {
-        Card card = cardRepository.findByNumber(cardNumber);
+    public void saveCard(Card card) {
+        cardRepository.save(card);
+    }
+
+    public void deleteAll() {
+        cardRepository.deleteAll();;
+    }
+
+    public void validateCard(String cardNumber, Long pin, Long cvc, Long expMonth, Long expYear) {
+        Card card = cardRepository.findByCardNumber(cardNumber);
 
         if(card == null) {
-            System.out.println("card null");
             throw ApiError.notFound("Card not found with this card number");
         }
-        System.out.println("card is found");
 
         if(!card.getStatus().equals(CardStatus.ACTIVE)) {
-            System.out.println("card status is inactive");
             throw ApiError.badRequest("Card status is "+card.getStatus());
         }
+        if(!card.getPin().equals(pin)) {
+            throw ApiError.badRequest("Pin is incorrect!");
+        }
+        if(!card.getCvc().equals(cvc)) {
+            throw ApiError.badRequest("Cvc is incorrect!");
+        }
+        if(!card.getExpMonth().equals(expMonth)) {
+            throw ApiError.badRequest("Expiry Month is incorrect!");
+        }
+        if(!card.getExpYear().equals(expYear)) {
+            throw ApiError.badRequest("Expiry Year is incorrect!");
+        }
+        return;
+    }
 
-        boolean isValid = card.getPin().equals(pin)
-                && card.getCvc().equals(cvc)
-                && card.getExpMonth().equals(expMonth)
-                && card.getExpYear().equals(expYear);
+    public void validateCVC(String cardNumber, Long cvc) {
+        Card card = cardRepository.findByCardNumber(cardNumber);
 
-        System.out.println("Validation result: " + isValid);
-        return isValid;
+        if(card == null) {
+            throw ApiError.notFound("Card not found with this card number");
+        }
+
+        if(!card.getCvc().equals(cvc)) {
+            throw ApiError.badRequest("CVC card is wrong!");
+        }
+
     }
 
 }

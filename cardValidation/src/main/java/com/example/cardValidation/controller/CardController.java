@@ -1,5 +1,6 @@
 package com.example.cardValidation.controller;
 
+import com.example.cardValidation.dto.ValidateCVCRequest;
 import com.example.cardValidation.dto.ValidationRequest;
 import com.example.cardValidation.service.CardService;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +17,19 @@ public class CardController {
 
     private final CardService cardService;
 
-    @PostMapping("/validate")
-    public ResponseEntity<String> validateCard(@RequestBody ValidationRequest validationRequest) {
-        if( cardService.validateCard(
-                validationRequest.getNumber(),
+    @PostMapping("/validate-card")
+    public ResponseEntity<Void> validateCard(@RequestBody ValidationRequest validationRequest) {
+        cardService.validateCard(validationRequest.getNumber(),
                 validationRequest.getPin(),
                 validationRequest.getCvc(),
                 validationRequest.getExpMonth(),
-                validationRequest.getExpYear())) {
-            return ResponseEntity.ok("Card is valid");
-        }
-        else {
-            return ResponseEntity.badRequest().body("Card is not valid");
-        }
+                validationRequest.getExpYear());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/validate-cvc")
+    public ResponseEntity<Void> validateCVC(@RequestBody ValidateCVCRequest validateCVCDto) {
+        cardService.validateCVC(validateCVCDto.getCardNumber(), validateCVCDto.getCVC());
+        return ResponseEntity.ok().build();
     }
 }

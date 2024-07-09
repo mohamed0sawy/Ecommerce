@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>cardValidation</artifactId>
+	<artifactId>cardPayment</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cardValidation</name>
-	<description>microservice responsible for validating the cards</description>
+	<name>cardPayment</name>
+	<description>microservice responsible for card payment</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -39,10 +39,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
-			<version>4.1.2</version>
+			<groupId>org.my_utilities</groupId>
+			<artifactId>MyCustomException</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
+
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
@@ -58,33 +60,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.2</version>
-        </dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>3.0.2</version>
 		</dependency>
-		<dependency>
-			<groupId>org.my_utilities</groupId>
-			<artifactId>MyCustomException</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-
-		<!--		<dependency>-->
-<!--			<groupId>org.slf4j</groupId>-->
-<!--			<artifactId>slf4j-api</artifactId>-->
-<!--			<version>1.7.30</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>ch.qos.logback</groupId>-->
-<!--			<artifactId>logback-classic</artifactId>-->
-<!--			<version>1.2.3</version>-->
-<!--		</dependency>-->
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
