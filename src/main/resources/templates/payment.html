@@ -12,20 +12,17 @@
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
     <title>payment</title>
+
     <style>
-        @media (min-width: 1025px) {
         .h-custom {
             height: 100vh !important;
         }
-        }
-
         .card-registration .select-input.form-control[readonly]:not([disabled]) {
             font-size: 1rem;
             line-height: 2.15;
             padding-left: .75em;
             padding-right: .75em;
         }
-
         .card-registration .select-arrow {
             top: 13px;
         }
@@ -59,17 +56,18 @@
                                                 <div class="row gy-5 justify-content-center">
                                                     <div class="col-12 col-lg-6">
 
-                                                        <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                                                        <a      data-mdb-button-init data-mdb-ripple-init
                                                                 class="btn btn-dark btn-block btn-lg" style="margin-top:50px"
                                                                 data-mdb-ripple-color="dark">Cash
                                                             <i class="fa-regular fa-money-bill-1" style="margin-left:15px"></i>
-                                                        </button>
+                                                        </a>
 
-                                                        <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                                                        <a      th:href="@{/api/v1/payment/card}"
+                                                                data-mdb-button-init data-mdb-ripple-init
                                                                 class="btn btn-dark btn-block btn-lg" style="margin-top:50px"
                                                                 data-mdb-ripple-color="dark">debit/credit card
                                                             <i class="fa-regular fa-credit-card" style="margin-left:15px"></i>
-                                                        </button>
+                                                        </a>
 
 
                                                     </div>
