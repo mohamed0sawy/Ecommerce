@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,17 +40,25 @@ public class PaymentController {
             return "card-form";
         }
         HttpSession session = request.getSession();
-//        Double totalPrice = (Double) session.getAttribute("totalPrice");
+        Double totalPrice = (Double) session.getAttribute("totalPrice");
+        cardInfoDTO.setTotalPrice(totalPrice);
+
 //        System.out.println("total price : " + totalPrice.doubleValue());
 //        System.out.println("card nom : " + cardInfoDTO.getCardNumber());
 //        int month = Integer.parseInt(cardInfoDTO.getMonth());
 //        System.out.println("card month : " + month);
 //        return "card-form";
 
-        Boolean paymentStatus = paymentClientService.payWithCard(cardInfoDTO);
+        HttpStatus httpStatus = paymentClientService.payWithCard(cardInfoDTO);
 
-        if (paymentStatus)
-            return "redirect:/api/v1/";
-        return "redirect:/api/v1/failedPaymentProcess";
+        if (httpStatus != HttpStatus.OK){
+            return "redirect:/api/v1/payment/wentWrong";
+        }
+        return "redirect:/api/v1/order/newOrder";
+    }
+
+    @GetMapping("/wentWrong")
+    public String wentWrong(){
+        return "went-wrong";
     }
 }

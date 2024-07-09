@@ -106,7 +106,7 @@ public class CartController {
                 .sum();
         HttpSession session = request.getSession();
         session.setAttribute("checkedCartItems", checkedCartItems);
-        session.setAttribute("totalPrice", totalPrice);
+        session.setAttribute("totalPrice", totalPrice + 30.0);
         User existingUser = (User) session.getAttribute("user");
         Long userId = existingUser.getId();
         String redirectUrl = "/api/v1/Address/list?user_id=" + userId;

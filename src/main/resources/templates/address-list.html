@@ -133,19 +133,24 @@
                                                 <div class="row gy-5 justify-content-center">
                                                     <div class="col-12 col-lg-6">
                                                         <form th:action="@{/api/v1/Address/select}" method="post">
-                                                            <div th:each="address, iterStat : ${addressList}" class="cart-item-row">
-                                                                <div class="frb frb-info">
-                                                                    <input type="radio" th:id="'radio-button-' + ${iterStat.index}" name="addressId" th:value="${address.id}">
-                                                                    <label th:for="'radio-button-' + ${iterStat.index}">
-                                                                        <span class="frb-title" th:text="${address.city}"></span> <br>
-                                                                        <span class="frb-description" th:text="${address.street}"></span>
-                                                                    </label>
+                                                            <div th:if="${#lists.isEmpty(addressList)}">
+                                                                <p>No addresses found.</p>
+                                                            </div>
+                                                            <div th:unless="${#lists.isEmpty(addressList)}">
+                                                                <div th:each="address, iterStat : ${addressList}" class="cart-item-row">
+                                                                    <div class="frb frb-info">
+                                                                        <input type="radio" th:id="'radio-button-' + ${iterStat.index}" name="addressId" th:value="${address.id}">
+                                                                        <label th:for="'radio-button-' + ${iterStat.index}">
+                                                                            <span class="frb-title" th:text="${address.city}"></span> <br>
+                                                                            <span class="frb-description" th:text="${address.street}"></span>
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="text-center" style="margin-top:5px">
-                                                                <button type="button" class="btn" style="background-color: #aec3d8;">
+                                                                <a class="btn" style="background-color: #aec3d8;">
                                                                     <i class="fas fa-plus" style="margin-right:5px"></i>Add Address
-                                                                </button>
+                                                                </a>
                                                             </div>
 
                                                             <button type="submit" id="continue-button" data-mdb-button-init data-mdb-ripple-init
