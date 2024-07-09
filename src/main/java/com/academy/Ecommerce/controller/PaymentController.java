@@ -1,9 +1,11 @@
 package com.academy.Ecommerce.controller;
 
-import com.academy.Ecommerce.DTO.cardInfoDTO;
+import com.academy.Ecommerce.DTO.CardInfoDTO;
+import com.academy.Ecommerce.feignClient.PaymentClientService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api/v1/payment")
+@RequiredArgsConstructor
 public class PaymentController {
+    private final PaymentClientService paymentClientService;
 
     @GetMapping
     public String showPaymentPage() {
@@ -23,23 +27,29 @@ public class PaymentController {
 
     @GetMapping("/card")
     public String cardForm(Model model){
-        model.addAttribute("cardInfoDTO", new cardInfoDTO());
+        model.addAttribute("cardInfoDTO", new CardInfoDTO());
         return "card-form";
     }
 
     @PostMapping("/card")
-    public String cardFormData(@Valid @ModelAttribute("cardInfoDTO") cardInfoDTO cardInfoDTO,
+    public String cardFormData(@Valid @ModelAttribute("cardInfoDTO") CardInfoDTO cardInfoDTO,
                                BindingResult result, Model model, HttpServletRequest request){
         if (result.hasErrors()) {
-            model.addAttribute("cardInfoDTO", new cardInfoDTO());
+            model.addAttribute("cardInfoDTO", new CardInfoDTO());
             return "card-form";
         }
         HttpSession session = request.getSession();
 //        Double totalPrice = (Double) session.getAttribute("totalPrice");
 //        System.out.println("total price : " + totalPrice.doubleValue());
-        System.out.println("card nom : " + cardInfoDTO.getCardNumber());
-        int month = Integer.parseInt(cardInfoDTO.getMonth());
-        System.out.println("card month : " + month);
-        return "card-form";
+//        System.out.println("card nom : " + cardInfoDTO.getCardNumber());
+//        int month = Integer.parseInt(cardInfoDTO.getMonth());
+//        System.out.println("card month : " + month);
+//        return "card-form";
+
+        Boolean paymentStatus = paymentClientService.payWithCard(cardInfoDTO);
+
+        if (paymentStatus)
+            return "redirect:/api/v1/";
+        return "redirect:/api/v1/failedPaymentProcess";
     }
 }

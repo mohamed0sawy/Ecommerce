@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class cardInfoDTO {
+public class CardInfoDTO {
     @NotBlank(message = "can't be blank")
     @NotNull(message = "please enter a value")
     @Size(min = 16, max = 16, message = "card number should be 16 digits")
