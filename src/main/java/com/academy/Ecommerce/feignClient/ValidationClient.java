@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "validation-service", url = "http://localhost:8081/api/v1/cardValidation")
-public interface ValidationClientService {
+public interface ValidationClient {
     @PostMapping("/validateCard")
     ResponseEntity<Void> validateCard(@RequestBody ValidationRequest cardInfoDTO);
 

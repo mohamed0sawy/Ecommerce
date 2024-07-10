@@ -33,7 +33,7 @@
             <div class="col-md-7 col-lg-5 col-xl-5">
                 <div class="card" style="border-radius: 15px;">
                     <div class="card-body p-4">
-                        <form th:action="@{/api/v1/payment/validateCVC}" th:object="${validateCVCRequest}" method="post">
+                        <form th:action="@{/api/v1/payment/processPayment}" th:object="${validateCVCRequest}" method="post">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div data-mdb-input-init class="form-outline">
                                     <select th:field="*{cardNumber}" id="cardNumber" class="form-control form-control-lg">
@@ -65,7 +65,7 @@
                             </div>
                         </form>
                         <div class="text-center mt-3">
-                            <a th:href="@{/api/v1/payment/addCard}" class="btn btn-secondary btn-block btn-lg">Add a New Card</a>
+                            <a th:href="@{/api/v1/card/cardForm}" class="btn btn-secondary btn-block btn-lg">Add a New Card</a>
                         </div>
                         <div th:if="${errorMessage}" class="text-center mt-3">
                             <div class="error-div" th:text="${errorMessage}"></div>

@@ -2,7 +2,7 @@ package com.academy.Ecommerce.service;
 
 import com.academy.Ecommerce.DTO.ValidateCVCRequest;
 import com.academy.Ecommerce.DTO.ValidationRequest;
-import com.academy.Ecommerce.feignClient.ValidationClientService;
+import com.academy.Ecommerce.feignClient.ValidationClient;
 import com.academy.Ecommerce.model.Card;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.repository.CardRepository;
@@ -18,34 +18,35 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CardService {
 
-    private final ValidationClientService validationClientService;
+    private final ValidationClient validationClientService;
     private final CardRepository cardRepository;
     private final UserService userService;
 
     public void validateCard(Long userId, ValidationRequest validationRequest) {
         ResponseEntity<Void> responseEntity = validationClientService.validateCard(validationRequest);
 
-        if(responseEntity.getStatusCode() == HttpStatus.OK) {
-            Card card = cardRepository.findByCardNumber(validationRequest.getNumber());
-            if( card == null) {
-                card = new Card();
-                card.setCardNumber(validationRequest.getNumber());
-                cardRepository.save(card);
-            }
-
-            User user = userService.getUser(userId);
-            List<Card> cards = user.getCards();
-            if(cards.contains(card)) {
-                //add logic to throw an error
-                throw new RuntimeException("User already have this card");
-            }
-            cards.add(card);
-            user.setCards(cards);
-            userService.saveUser(user);
-        } else {
+        if(responseEntity.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Failed to validate card");
         }
 
+    }
+
+    public void addCardToUser(Long userId, String cardNumber) {
+        Card card = cardRepository.findByCardNumber(cardNumber);
+        if( card == null) {
+            card = new Card();
+            card.setCardNumber(cardNumber);
+            cardRepository.save(card);
+        }
+        User user = userService.getUser(userId);
+        List<Card> cards = user.getCards();
+        if(cards.contains(card)) {
+            //add logic to throw an error
+            throw new RuntimeException("User already have this card");
+        }
+        cards.add(card);
+        user.setCards(cards);
+        userService.saveUser(user);
     }
 
 
