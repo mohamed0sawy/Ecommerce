@@ -38,7 +38,7 @@ public class CardService {
             card.setCardNumber(cardNumber);
             cardRepository.save(card);
         }
-        User user = userService.getUser(userId);
+        User user = userService.findUserById(userId);
         List<Card> cards = user.getCards();
         if(cards.contains(card)) {
             //add logic to throw an error
@@ -51,7 +51,7 @@ public class CardService {
 
 
     public List<String> getCardNumbersOfUser(Long userId) {
-        User user = userService.getUser(userId);
+        User user = userService.findUserById(userId);
         List<Card> cards = user.getCards();
         List<String> cardNumbers = cards.stream()
                 .map(Card::getCardNumber)
