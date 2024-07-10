@@ -2,6 +2,7 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.exception.NotFoundException;
 import com.academy.Ecommerce.model.Address;
+import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.AddressService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -37,15 +38,15 @@ public class AddressController {
     public String createAddress(@Valid @ModelAttribute Address address, BindingResult result,
                                 HttpServletRequest request){
         HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
             throw new NotFoundException("User ID not found in session");
         }
         if(result.hasErrors()){
             return "address-form";
         }
-        addressService.createAddress(address, userId);
-        return "redirect:/api/v1/addresses/user/" + userId;
+        addressService.createAddress(address, user.getId());
+        return "redirect:/api/v1/addresses/user/" + user.getId();
     }
 
     @GetMapping("/created")
