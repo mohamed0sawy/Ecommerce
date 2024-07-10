@@ -41,6 +41,9 @@ public class CartItemService {
         cartItemRepository.deleteByCartId(cartId);
     }
 
+    public List<CartItem> createCartItemList(List<CartItem> cartItem) {
+        return cartItemRepository.saveAll(cartItem);
+    }
 //    public List<CartItem> cleanCartItems(Long cartId) {
 //        List<CartItem> cartItems = findCartItemByCartId(cartId);
 //        Iterator<CartItem> iterator = cartItems.iterator();

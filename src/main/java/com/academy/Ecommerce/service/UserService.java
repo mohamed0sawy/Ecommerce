@@ -6,16 +6,14 @@ import com.academy.Ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
-//    public User findUserById(Long userId) {
-//        Optional<User> user = userRepository.findById(userId);
-//        return user.orElse(null); // Handle the case where the user is not found
-//    }
 
     public User findUserById(Long userId) {
         return userRepository.findById(userId).get();

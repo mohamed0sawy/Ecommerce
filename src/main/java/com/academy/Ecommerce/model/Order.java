@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//@Setter
+@Setter
 @Getter
 @Entity
 @Table(name = "orders")
@@ -34,6 +34,10 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    @Column(name= "payment_method", nullable = false)
+    @Column(name= "payment_method")
     private String paymentMethod;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "address_id")
+    private Address address;
 }
