@@ -13,7 +13,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final RoleRepository roleRepository;
-//    private final UserRepository userRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -21,6 +20,10 @@ public class UserService {
     public User findUserById(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         return user.orElse(null); // Handle the case where the user is not found
+    }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
 }

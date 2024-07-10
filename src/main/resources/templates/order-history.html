@@ -16,6 +16,7 @@
             <th>Order Date</th>
             <th>Total Price</th>
             <th>Payment Method</th>
+            <th>Address</th>
             <th>Order Details</th>
         </tr>
         </thead>
@@ -24,8 +25,13 @@
             <td th:text="${order.id}"></td>
             <td th:text="${order.orderDate}"></td>
             <td th:text="${order.totalPrice != null ? order.totalPrice : '0.00'}"></td>
-            <td th:text="${order.paymentMethod}"></td>
-            <td><a th:href="@{/api/orders/details/{orderId}(orderId=${order.id})}" class="btn btn-primary">Details</a></td>
+            <td>
+                <span th:text="${paymentMethod}"></span>
+            </td>
+            <td>
+                <span th:text="${selectedAddress.street + ', ' + selectedAddress.city}"></span>
+            </td>
+            <td><a th:href="@{/api/v1/orders/details/{orderId}(orderId=${order.id})}" class="btn btn-primary">Details</a></td>
         </tr>
         </tbody>
     </table>

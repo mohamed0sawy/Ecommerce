@@ -55,5 +55,15 @@ public class User {
 //        this.password = password;
 //        this.enabled = enabled;
 //    }
+
+//    public User(String username, String password, String email, boolean enabled, boolean locked, int loginTries, String confirmationToken) {
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.enabled = enabled;
+//        this.locked = locked;
+//        this.loginTries = loginTries;
+//        this.confirmationToken = confirmationToken;
+//    }
 }
 

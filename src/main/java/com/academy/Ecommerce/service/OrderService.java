@@ -1,17 +1,23 @@
 package com.academy.Ecommerce.service;
 
 import com.academy.Ecommerce.exception.NotFoundException;
-import com.academy.Ecommerce.model.Address;
-import com.academy.Ecommerce.model.Order;
-import com.academy.Ecommerce.model.OrderItem;
-import com.academy.Ecommerce.model.User;
+import com.academy.Ecommerce.model.*;
+import com.academy.Ecommerce.repository.OrderItemRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.academy.Ecommerce.repository.OrderRepository;
 import com.academy.Ecommerce.repository.UserRepository;
+import org.springframework.security.config.annotation.web.OAuth2ResourceServerDsl;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class OrderService {
@@ -20,6 +26,10 @@ public class OrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
 
     public List<Order> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
@@ -58,5 +68,37 @@ public class OrderService {
             totalPrice += item.getQuantity() * item.getProduct().getPrice();
         }
         return totalPrice;
+    }
+
+    public void getCartItems(List<Order> orders, HttpServletRequest request){
+        HttpSession session = request.getSession();
+
+        User user = new User();
+        Address address = new Address();
+
+        List<CartItem> cartItemList = (List<CartItem>) session.getAttribute("checkedCartItems");
+        Long selectedAddressId = (Long) session.getAttribute("selectedAddressId");
+        Long selectedUserId = (Long) session.getAttribute("userId");
+        user.setId(selectedUserId);
+        address.setUser(user);
+        address.setId(selectedAddressId);
+
+        for(Order order : orders) {
+            List<OrderItem> orderItems = new ArrayList<>();
+            for (CartItem cartItem : cartItemList) {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setProduct(cartItem.getProduct());
+                orderItem.setQuantity(cartItem.getQuantity().getValue());
+
+                order.setUser(user);
+                order.setAddress(address);
+                order.setOrderDate(LocalDateTime.now());
+                orderRepository.save(order);
+
+                orderItem.setOrder(order);
+                orderItems.add(orderItem);
+                orderItemRepository.saveAll(orderItems);
+            }
+        }
     }
 }
