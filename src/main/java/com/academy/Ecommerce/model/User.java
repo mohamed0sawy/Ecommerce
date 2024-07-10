@@ -1,5 +1,6 @@
 package com.academy.Ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Getter
     @Column(name = "user_name")
     private String username;
     @Column(name = "password")
@@ -31,9 +33,13 @@ public class User {
     @Column(name = "confirmation_token")
     private String confirmationToken;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "customer_id")
+//    private Customer customer;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Address> addresses;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "users_roles",
@@ -41,7 +47,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     List<Role> roles;
 
-//    public User(String username, String password, boolean enabled) {
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
+    //    public User(String username, String password, boolean enabled) {
 //        this.username = username;
 //        this.password = password;
 //        this.enabled = enabled;
