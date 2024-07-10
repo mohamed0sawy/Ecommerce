@@ -17,7 +17,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Getter
     @Column(name = "user_name")
     private String username;
     @Column(name = "password")
@@ -47,6 +46,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     List<Role> roles;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "user_cards",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "card_id"))
+    private List<Card> cards;
+
+//    public User(String username, String password, boolean enabled) {
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
