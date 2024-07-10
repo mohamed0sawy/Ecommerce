@@ -26,7 +26,8 @@ public class CardService {
 
     public void validateCard(String cardNumber, Long pin, Long cvc, Long expMonth, Long expYear) {
         Card card = cardRepository.findByCardNumber(cardNumber);
-
+        System.out.println(cardNumber);
+        System.out.println(card);
         if(card == null) {
             throw ApiError.notFound("Card not found with this card number");
         }

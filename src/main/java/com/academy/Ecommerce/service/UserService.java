@@ -12,5 +12,10 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
-
+    public User getUser(Long userId) {
+        return userRepository.findById(userId).get();
+    }
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 }

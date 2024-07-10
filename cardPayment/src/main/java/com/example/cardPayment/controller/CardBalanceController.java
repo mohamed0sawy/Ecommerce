@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/card-balance")
+@RequestMapping("/api/v1/cardPayment")
 public class CardBalanceController {
 
     private final CardBalanceService cardBalanceService;
 
-    @PostMapping("/process-payment")
+    @PostMapping("/processPayment")
     public ResponseEntity<Void> processPayment(@RequestBody ProcessPaymentRequest processPaymentRequest) {
         cardBalanceService.processPayment(processPaymentRequest.getCardNumber(), processPaymentRequest.getAmount());
         return ResponseEntity.ok().build();

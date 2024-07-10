@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/card-validation")
+@RequestMapping("/api/v1/cardValidation")
 public class CardController {
 
     private final CardService cardService;
 
-    @PostMapping("/validate-card")
+    @PostMapping("/validateCard")
     public ResponseEntity<Void> validateCard(@RequestBody ValidationRequest validationRequest) {
         cardService.validateCard(validationRequest.getNumber(),
                 validationRequest.getPin(),
@@ -27,7 +27,7 @@ public class CardController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/validate-cvc")
+    @PostMapping("/validateCVC")
     public ResponseEntity<Void> validateCVC(@RequestBody ValidateCVCRequest validateCVCDto) {
         cardService.validateCVC(validateCVCDto.getCardNumber(), validateCVCDto.getCVC());
         return ResponseEntity.ok().build();
