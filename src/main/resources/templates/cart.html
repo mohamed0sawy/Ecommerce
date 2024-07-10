@@ -51,8 +51,6 @@
                                     </div>
                                     <hr class="my-4">
 
-                                    <!--                                    from here starts my test code -->
-
                                     <div th:each="cartItem : ${cartItems}" class="cart-item-row">
                                         <div class="row mb-4 d-flex justify-content-between align-items-center">
                                             <div class="col-md-2 col-lg-2 col-xl-2">
@@ -115,7 +113,6 @@
                                         <h5 class="text-uppercase mb-3">30 $</h5>
                                     </div>
 
-
                                     <h5 class="text-uppercase mb-3">Give code</h5>
 
                                     <div class="mb-5">
@@ -130,12 +127,12 @@
 
                                     <div class="d-flex justify-content-between mb-5">
                                         <h5 class="text-uppercase">Total price</h5>
-                                        <h5 id="total-price-with-shopping" th:text="${totalPriceWithShopping} + ' $'">Total Price</h5>
+                                        <h5 id="total-price-with-shopping" th:text="${totalPriceWithShipping} + ' $'">Total Price</h5>
                                     </div>
 
                                     <button type="button" data-mdb-button-init data-mdb-ripple-init
                                             class="btn btn-dark btn-block btn-lg"
-                                            data-mdb-ripple-color="dark" onclick="checkout()">CheckOut
+                                            data-mdb-ripple-color="dark" onclick="checkout()" id="checkout-button">CheckOut
                                     </button>
 
                                 </div>
@@ -149,38 +146,50 @@
 </section>
 
 <script th:inline="javascript">
-    // Increment quantity function
+    document.addEventListener('DOMContentLoaded', function () {
+        updateCheckoutButtonState();
+    });
+
     function incrementQuantity(button) {
         var input = button.parentNode.querySelector('input[type=number]');
         input.stepUp();
         updateTotalPrice();
     }
 
-    // Decrement quantity function
     function decrementQuantity(button) {
         var input = button.parentNode.querySelector('input[type=number]');
         input.stepDown();
         updateTotalPrice();
     }
 
-    // Update total price function
     function updateTotalPrice() {
         var totalPrice = 0;
         var cartItems = document.querySelectorAll('.cart-item-row');
-        console.log('cartItems');
-        console.log(cartItems);
 
         cartItems.forEach(function(cartItem) {
             var quantity = parseInt(cartItem.querySelector('input[type=number]').value);
             var price = parseFloat(cartItem.querySelector('.col-md-3.col-lg-2.col-xl-2.offset-lg-1 h6').textContent.replace(' $', ''));
             totalPrice += quantity * price;
         });
-
         document.getElementById('total-price').textContent = totalPrice.toFixed(2) + ' $';
-        document.getElementById('total-price-with-shopping').textContent = (totalPrice + 30.0).toFixed(2) + ' $';
+
+        var totalPriceWithShipping = totalPrice === 0 ? 0 : totalPrice + 30.0;
+        document.getElementById('total-price-with-shopping').textContent = totalPriceWithShipping.toFixed(2) + ' $';
+
+        updateCheckoutButtonState();
     }
 
-    // Checkout function
+    function updateCheckoutButtonState() {
+        var cartItems = document.querySelectorAll('.cart-item-row');
+        var checkoutButton = document.getElementById('checkout-button');
+
+        if (cartItems.length === 0) {
+            checkoutButton.disabled = true;
+        } else {
+            checkoutButton.disabled = false;
+        }
+    }
+
     function checkout() {
         var cartItems = document.querySelectorAll('.cart-item-row');
         var cartData = [];
@@ -218,6 +227,194 @@
         });
     }
 </script>
+
+
+
+
+
+
+
+<!--<section class="h-100 h-custom" style="background-color: #aec3d8;">-->
+<!--    <div class="container py-5 h-100">-->
+<!--        <div class="row d-flex justify-content-center align-items-center h-100">-->
+<!--            <div class="col-12">-->
+<!--                <div class="card card-registration card-registration-2" style="border-radius: 15px;">-->
+<!--                    <div class="card-body p-0">-->
+<!--                        <div class="row g-0">-->
+<!--                            <div class="col-lg-8">-->
+<!--                                <div class="p-5">-->
+<!--                                    <div class="d-flex justify-content-between align-items-center mb-5">-->
+<!--                                        <h1 class="fw-bold mb-0">Shopping Cart</h1>-->
+<!--                                        <h6 class="mb-0 text-muted" th:text="${cartItems.size()} +' items'"></h6>-->
+<!--                                    </div>-->
+<!--                                    <hr class="my-4">-->
+
+
+<!--                                    <div th:each="cartItem : ${cartItems}" class="cart-item-row">-->
+<!--                                        <div class="row mb-4 d-flex justify-content-between align-items-center">-->
+<!--                                            <div class="col-md-2 col-lg-2 col-xl-2">-->
+<!--                                                <img-->
+<!--                                                        th:src="@{${cartItem.product.imgUrl}}"-->
+<!--                                                        class="img-fluid rounded-3" alt="item-img">-->
+<!--                                            </div>-->
+<!--                                            <div class="col-md-3 col-lg-3 col-xl-3">-->
+<!--                                                <h6 class="text-muted">category</h6>-->
+<!--                                                <h6 class="mb-0" th:text="${cartItem.product.name}"></h6>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-md-3 col-lg-3 col-xl-3 d-flex">-->
+<!--                                                <button data-mdb-button-init data-mdb-ripple-init-->
+<!--                                                        class="btn btn-link px-2"-->
+<!--                                                        onclick="decrementQuantity(this)">-->
+<!--                                                    <i class="fas fa-minus"></i>-->
+<!--                                                </button>-->
+
+<!--                                                <input id="form10" min="1" name="quantity"-->
+<!--                                                       th:value="${cartItem.quantity.value}" type="number"-->
+<!--                                                       class="form-control form-control-sm" onchange="updateTotalPrice()"/>-->
+
+<!--                                                <button data-mdb-button-init data-mdb-ripple-init-->
+<!--                                                        class="btn btn-link px-2"-->
+<!--                                                        onclick="incrementQuantity(this)">-->
+<!--                                                    <i class="fas fa-plus"></i>-->
+<!--                                                </button>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">-->
+<!--                                                <h6 class="mb-0" th:text="${cartItem.product.price} +' $'"></h6>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">-->
+<!--                                                <a th:href="@{/api/v1/cart/remove(itemId=${cartItem.id})}" class="text-muted">-->
+<!--                                                    <i class="fas fa-times"></i>-->
+<!--                                                </a>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+
+<!--                                        <hr class="my-4">-->
+<!--                                    </div>-->
+
+<!--                                    <div class="pt-5">-->
+<!--                                        <h6 class="mb-0"><a th:href="@{/api/v1/main}" class="text-body"><i-->
+<!--                                                class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-lg-4 bg-body-tertiary">-->
+<!--                                <div class="p-5">-->
+<!--                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>-->
+<!--                                    <hr class="my-4">-->
+
+<!--                                    <div class="d-flex justify-content-between mb-4">-->
+<!--                                        <h5 class="text-uppercase">Total Price</h5>-->
+<!--                                        <h5 id="total-price" th:text="${totalPrice} + ' $'">Total Price</h5>-->
+<!--                                    </div>-->
+
+<!--                                    <div class="d-flex justify-content-between mb-4">-->
+<!--                                        <h5 class="text-uppercase mb-3">Shipping</h5>-->
+<!--                                        <h5 class="text-uppercase mb-3">30 $</h5>-->
+<!--                                    </div>-->
+
+
+<!--                                    <h5 class="text-uppercase mb-3">Give code</h5>-->
+
+<!--                                    <div class="mb-5">-->
+<!--                                        <div data-mdb-input-init class="form-outline">-->
+<!--                                            <input type="text" id="form3Examplea2"-->
+<!--                                                   class="form-control form-control-lg"/>-->
+<!--                                            <label class="form-label" for="form3Examplea2">Enter your code</label>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+
+<!--                                    <hr class="my-4">-->
+
+<!--                                    <div class="d-flex justify-content-between mb-5">-->
+<!--                                        <h5 class="text-uppercase">Total price</h5>-->
+<!--                                        <h5 id="total-price-with-shopping" th:text="${totalPriceWithShopping} + ' $'">Total Price</h5>-->
+<!--                                    </div>-->
+
+<!--                                    <button type="button" data-mdb-button-init data-mdb-ripple-init-->
+<!--                                            class="btn btn-dark btn-block btn-lg"-->
+<!--                                            data-mdb-ripple-color="dark" onclick="checkout()">CheckOut-->
+<!--                                    </button>-->
+
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
+<!--<script th:inline="javascript">-->
+<!--    // Increment quantity function-->
+<!--    function incrementQuantity(button) {-->
+<!--        var input = button.parentNode.querySelector('input[type=number]');-->
+<!--        input.stepUp();-->
+<!--        updateTotalPrice();-->
+<!--    }-->
+
+<!--    // Decrement quantity function-->
+<!--    function decrementQuantity(button) {-->
+<!--        var input = button.parentNode.querySelector('input[type=number]');-->
+<!--        input.stepDown();-->
+<!--        updateTotalPrice();-->
+<!--    }-->
+
+<!--    // Update total price function-->
+<!--    function updateTotalPrice() {-->
+<!--        var totalPrice = 0;-->
+<!--        var cartItems = document.querySelectorAll('.cart-item-row');-->
+<!--        console.log('cartItems');-->
+<!--        console.log(cartItems);-->
+
+<!--        cartItems.forEach(function(cartItem) {-->
+<!--            var quantity = parseInt(cartItem.querySelector('input[type=number]').value);-->
+<!--            var price = parseFloat(cartItem.querySelector('.col-md-3.col-lg-2.col-xl-2.offset-lg-1 h6').textContent.replace(' $', ''));-->
+<!--            totalPrice += quantity * price;-->
+<!--        });-->
+
+<!--        document.getElementById('total-price').textContent = totalPrice.toFixed(2) + ' $';-->
+<!--        document.getElementById('total-price-with-shopping').textContent = (totalPrice + 30.0).toFixed(2) + ' $';-->
+<!--    }-->
+
+<!--    // Checkout function-->
+<!--    function checkout() {-->
+<!--        var cartItems = document.querySelectorAll('.cart-item-row');-->
+<!--        var cartData = [];-->
+
+<!--        cartItems.forEach(function(cartItem) {-->
+<!--            var cartItemId = cartItem.querySelector('a').getAttribute('href').split('=')[1];-->
+<!--            cartItemId = cartItemId.replace(/\D/g, '');-->
+<!--            var quantity = parseInt(cartItem.querySelector('input[type=number]').value);-->
+<!--            cartData.push({ cartItemId: cartItemId, quantity: quantity });-->
+<!--        });-->
+
+<!--        fetch('/api/v1/cart/checkout', {-->
+<!--            method: 'POST',-->
+<!--            headers: {-->
+<!--                'Content-Type': 'application/json'-->
+<!--            },-->
+<!--            body: JSON.stringify(cartData)-->
+<!--        })-->
+<!--        .then(response => {-->
+<!--            if (response.redirected) {-->
+<!--                window.location.href = response.url;-->
+<!--            } else {-->
+<!--                return response.json();-->
+<!--            }-->
+<!--        })-->
+<!--        .then(data => {-->
+<!--            if (data && data.success) {-->
+<!--                window.location.href = '/api/v1/Address/list';-->
+<!--            } else if (data && !data.success) {-->
+<!--                alert(data.message);-->
+<!--            }-->
+<!--        })-->
+<!--        .catch(error => {-->
+<!--            console.error('Error:', error);-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
