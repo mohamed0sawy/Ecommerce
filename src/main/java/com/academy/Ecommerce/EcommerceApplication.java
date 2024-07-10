@@ -45,7 +45,7 @@ public class EcommerceApplication {
 //			user1.setLocked(false);
 //			user1.setPassword(passwordEncoder.encode("123"));
 //			user1.setRoles(List.of(role1));
-//			user1.setCustomer(new Customer(user1.getUsername()));
+//			//user1.setCustomer(new Customer(user1.getUsername()));
 //
 //			User user2 = new User();
 //			user2.setUsername("admin");
@@ -54,7 +54,7 @@ public class EcommerceApplication {
 //			user2.setLocked(false);
 //			user2.setPassword(passwordEncoder.encode("456"));
 //			user2.setRoles(List.of(role2));
-//			user2.setCustomer(new Customer(user2.getUsername()));
+//			//user2.setCustomer(new Customer(user2.getUsername()));
 //
 //			userRepository.saveAllAndFlush(List.of(user1, user2));
 //

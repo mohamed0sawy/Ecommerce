@@ -31,10 +31,9 @@ public class AddressService {
         return address;
     }
 
-    public Address createAddress(Address address){
-        Long userId = address.getUser().getId();
+    public Address createAddress(Address address, Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new NotFoundException(" User with ID " + userId + " not found ");
         }
         User user = userOptional.get();
@@ -42,22 +41,21 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    public Address updateAddressByUserId(Address address, Long userId) {
-        // Find all addresses of the user
-        List<Address> userAddresses = addressRepository.findByUserId(userId);
+    public Address getAddressByIdAndUserId(Long id, Long userId) {
+        return addressRepository.findByIdAndUserId(id, userId).orElseThrow(() -> new NotFoundException("Address not found"));
+    }
 
-        // Update the address in the list (assuming you have the logic to uniquely identify the address)
-        for (Address userAddress : userAddresses) {
-            if (userAddress.getId().equals(address.getId())) {
-                userAddress.setStreet(address.getStreet());
-                userAddress.setCity(address.getCity());
-                userAddress.setState(address.getState());
-                userAddress.setZipCode(address.getZipCode());
-                // Optionally, update other fields as needed
-                return addressRepository.save(userAddress);
-            }
+    public void updateAddressByUserId(Address updatedAddress, Long addressId, Long userId) {
+        Address existingAddress = getAddressByIdAndUserId(addressId, userId);
+        if (existingAddress == null) {
+            throw new NotFoundException("Address with ID " + addressId + " not found for User ID " + userId);
         }
-        throw new NotFoundException("Address with ID " + address.getId() + " not found for User ID " + userId);
+
+        existingAddress.setStreet(updatedAddress.getStreet());
+        existingAddress.setCity(updatedAddress.getCity());
+        existingAddress.setState(updatedAddress.getState());
+        existingAddress.setZipCode(updatedAddress.getZipCode());
+        addressRepository.save(existingAddress);
     }
 
     public String deleteAddressById(Long id){

@@ -31,8 +31,8 @@
             <td th:text="${address.state}"></td>
             <td th:text="${address.zipCode}"></td>
             <td th:text="${address.user != null ? address.user.username : 'Unknown'}"></td>
-            <td><a th:href="@{/api/addresses/update/{id}(id=${address.id})}" class="btn btn-primary">Update</a></td>
-            <td><a th:href="@{/api/addresses/delete/{id}(id=${address.id})}" class="btn btn-danger" onclick="return confirmDelete(event)">Delete</a></td>
+            <td><a th:href="@{/api/v1/addresses/update/{id}(id=${address.id})}" class="btn btn-primary">Update</a></td>
+            <td><a th:href="@{/api/v1/addresses/delete/{id}(id=${address.id})}" class="btn btn-danger" onclick="return confirmDelete(event)">Delete</a></td>
         </tr>
         </tbody>
     </table>
