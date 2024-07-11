@@ -111,7 +111,7 @@ public class AddressController {
     public String listUserAddress(@RequestParam("user_id") Long userId, Model model){
         List<Address> addressList = addressService.getAddressesByUserId(userId);
         model.addAttribute("addressList", addressList);
-        return "address-list";
+        return "address-checkList";
     }
 
     @PostMapping("/select")

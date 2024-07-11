@@ -59,7 +59,7 @@
                                                         class="img-fluid rounded-3" alt="item-img">
                                             </div>
                                             <div class="col-md-3 col-lg-3 col-xl-3">
-                                                <h6 class="text-muted">category</h6>
+                                                <h6 class="text-muted" th:text="${cartItem.product.category.name}"></h6>
                                                 <h6 class="mb-0" th:text="${cartItem.product.name}"></h6>
                                             </div>
                                             <div class="col-md-3 col-lg-3 col-xl-3 d-flex">

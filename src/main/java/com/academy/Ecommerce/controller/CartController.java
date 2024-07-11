@@ -135,7 +135,7 @@ public class CartController {
     }
 
     private String buildRedirectUrl(Long userId) {
-        return "/api/v1/Address/list?user_id=" + userId;
+        return "/api/v1/addresses/list?user_id=" + userId;
     }
 
 
