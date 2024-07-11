@@ -69,10 +69,11 @@ public class RegistrationController {
         user.setEnabled(false);
         String token = UUID.randomUUID().toString();
         user.setConfirmationToken(token);
-        Role role = roleService.findRoleByName("customer");
+        Role role = roleService.findRoleByName("ROLE_CUSTOMER");
         user.setRoles(List.of(role));
         return user;
     }
+
 
     private void sendConfirmationEmail(User user) {
         try {
