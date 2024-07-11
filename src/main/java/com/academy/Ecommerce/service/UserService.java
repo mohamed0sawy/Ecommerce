@@ -6,6 +6,8 @@ import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.repository.RoleRepository;
 import com.academy.Ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,32 +19,48 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
+    public List<User> getAllUsers() {
+         return userRepository.findAll();
+    }
+    public User findUserById(Long id){
+        return userRepository.findUserById(id);
+    }
 
-    public User findUserByEmail(String email){
+
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public User findUserByConfirmationToken(String token){
+    public User findUserByConfirmationToken(String token) {
         return userRepository.findByConfirmationToken(token);
     }
 
-    public User saveUser(User user){
+    public List<User> findUsersByRole(Role role ){
+        return userRepository.findByRoles(role);
+    }
+
+
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 
-    public void deleteUser(User user){
+    public void deleteUser(User user) {
         userRepository.deleteById(user.getId());
     }
-  
+
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
+
 
 
     @Override
@@ -55,7 +73,7 @@ public class UserService implements UserDetailsService {
             throw new LockedException("User account is locked");
         }
 
-        if(!user.isEnabled()){
+        if (!user.isEnabled()) {
             throw new UserIsNotEnabledException("user is not enabled");
         }
 
@@ -70,4 +88,6 @@ public class UserService implements UserDetailsService {
         return roles.stream().map(role ->
                 new SimpleGrantedAuthority(role.getName())).toList();
     }
+
+
 }
