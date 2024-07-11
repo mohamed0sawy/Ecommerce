@@ -1,5 +1,6 @@
 package com.academy.Ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,13 @@ public class User {
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "customer_id")
 //    private Customer customer;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "customer_id")
+//    private Customer customer;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Address> addresses;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "users_roles",
@@ -41,10 +49,30 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     List<Role> roles;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "user_cards",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "card_id"))
+    private List<Card> cards;
+
 //    public User(String username, String password, boolean enabled) {
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
+    //    public User(String username, String password, boolean enabled) {
 //        this.username = username;
 //        this.password = password;
 //        this.enabled = enabled;
+//    }
+
+//    public User(String username, String password, String email, boolean enabled, boolean locked, int loginTries, String confirmationToken) {
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.enabled = enabled;
+//        this.locked = locked;
+//        this.loginTries = loginTries;
+//        this.confirmationToken = confirmationToken;
 //    }
 }
 
