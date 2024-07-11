@@ -21,6 +21,11 @@
     </style>
 </head>
 <body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+<br>
+
 <div class="container">
     <h1>Edit Product</h1>
     <form th:action="@{/api/v1/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">

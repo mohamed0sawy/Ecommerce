@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
 </head></head>
 <body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+<br>
+
 <div class="container">
     <h1>Create Category</h1>
     <form th:action="@{/api/v1/categories/create}" th:object="${category}" method="post">

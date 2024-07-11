@@ -15,6 +15,11 @@
 </head>
 </head>
 <body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+<br>
+
 <div class="container">
     <h1>Update Category</h1>
     <form th:action="@{/api/v1/categories/edit/{id}(id=${category.id})}" th:object="${category}" method="post">
