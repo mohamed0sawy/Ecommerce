@@ -48,8 +48,7 @@ public class OrderController {
 
 
     @GetMapping("/history/{userId}")
-    public String getOrderHistory(@PathVariable Long userId, HttpServletRequest request, Model model,
-                                  @RequestParam("payment") String paymentMethod) {
+    public String getOrderHistory(@PathVariable Long userId, HttpServletRequest request, Model model) {
         List<Order> orderHistory = orderService.getOrderHistoryByUserId(userId);
 
         HttpSession session = request.getSession();
@@ -58,7 +57,7 @@ public class OrderController {
 
         model.addAttribute("orders", orderHistory);
         model.addAttribute("selectedAddress", selectedAddress);
-        model.addAttribute("paymentMethod", paymentMethod);
+        //model.addAttribute("paymentMethod", paymentMethod);
         return "order-history";
     }
 
@@ -72,7 +71,7 @@ public class OrderController {
     }
 
     @GetMapping("/cartItems")
-    public String getCartItems(HttpServletRequest request) {
+    public String getCartItems(HttpServletRequest request, @RequestParam("payment") String paymentMethod) {
         HttpSession session = request.getSession();
 
         List<CartItem> cartItemList = (List<CartItem>) session.getAttribute("checkedCartItems");
@@ -89,6 +88,7 @@ public class OrderController {
         order.setUser(user);
         order.setAddress(address);
         order.setOrderDate(LocalDateTime.now());
+        order.setPaymentMethod(paymentMethod);
         orderRepository.save(order);
 
         List<OrderItem> orderItems = new ArrayList<>();
