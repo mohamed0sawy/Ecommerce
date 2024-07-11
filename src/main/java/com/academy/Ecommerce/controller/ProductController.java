@@ -6,6 +6,7 @@ import com.academy.Ecommerce.service.CategoryService;
 import com.academy.Ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,8 @@ public class ProductController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String listProducts(Model model) {
         List<Product> products = productService.getAllProducts();
         model.addAttribute("products", products);
@@ -38,6 +41,8 @@ public class ProductController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.findAll());
@@ -45,6 +50,8 @@ public class ProductController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String createProduct(@ModelAttribute @Valid Product product, BindingResult bindingResult, @RequestParam("image") MultipartFile image, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.findAll());
@@ -76,6 +83,8 @@ public class ProductController {
         return "redirect:/products";
     }
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Product product = productService.getProductById(id);
         if(product == null){
@@ -89,6 +98,8 @@ public class ProductController {
     }
 
     @PostMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String editProduct(@PathVariable("id") Long id, @ModelAttribute("product") @Valid Product product,BindingResult bindingResult,
                               @RequestParam("image") MultipartFile image, Model model) {
         if (bindingResult.hasErrors()) {
@@ -111,6 +122,8 @@ public class ProductController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
         return "redirect:/products";
@@ -123,6 +136,8 @@ public class ProductController {
 
         }
         model.addAttribute("product", product);
+        model.addAttribute("categories", categoryService.findAll());
+
         return "product/show";
     }
 

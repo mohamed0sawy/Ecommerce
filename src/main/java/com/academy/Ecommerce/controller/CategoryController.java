@@ -3,7 +3,9 @@ package com.academy.Ecommerce.controller;
 import com.academy.Ecommerce.model.Category;
 import com.academy.Ecommerce.service.CategoryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,10 +15,12 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/categories")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+@RequiredArgsConstructor
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+
+    private final CategoryService categoryService;
 
     @GetMapping
     public String listCategories(Model model) {
