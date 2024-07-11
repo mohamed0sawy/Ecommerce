@@ -3,10 +3,12 @@ package com.academy.Ecommerce.controller;
 import com.academy.Ecommerce.DTO.ValidationRequest;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.CardService;
+import feign.FeignException;
 import jakarta.mail.Session;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,10 +45,17 @@ public class CardController {
             System.out.println("Card Validated");
             cardService.addCardToUser(user.getId(), validationRequest.getNumber());
             System.out.println("Card added to user successfully");
-            return "redirect:/api/v1/payment/chooseCard";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("errorMessage", e.getMessage());
+            return "redirect:/api/v1/payment/chooseCardForm";
+        } catch (FeignException e) {
+            if(e.status() == 404) {
+                model.addAttribute("errorMessage", "Card number is not valid!");
+                System.out.println("Card number is not valid!");
+            }
+            else if(e.status() == 400) {
+                model.addAttribute("errorMessage", "Card Information is wrong!");
+                System.out.println("Card Information is wrong!");
+            }
+
             return "add-card";
         }
     }

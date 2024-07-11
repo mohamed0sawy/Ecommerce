@@ -6,6 +6,7 @@ import com.academy.Ecommerce.DTO.ValidateCVCRequest;
 import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.CardService;
 import com.academy.Ecommerce.service.PaymentService;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -63,14 +64,19 @@ public class PaymentController {
             paymentService.processPayment(validateCVCRequest, processPaymentRequest);
             System.out.println("Done and balance reduced!");
             return "redirect:/api/v1/payment/chooseCardForm";
-        } catch (Exception e) {
+        } catch (FeignException e) {
             // Handle error and populate model with necessary attributes for the choose-card.html
             List<String> cardNumbers = cardService.getCardNumbersOfUser(user.getId()); // Assuming user ID 1
             model.addAttribute("cardNumbers", cardNumbers);
             model.addAttribute("validateCVCRequest", validateCVCRequest);
             model.addAttribute("processPaymentRequest", processPaymentRequest);
-            model.addAttribute("errorMessage", e.getMessage());
 //            model.addAttribute("errorMessage", "Balance Not Enough");
+            if(e.getMessage().contains("Insufficient funds!")) {
+                model.addAttribute("errorMessage", "Insufficient funds!");
+            }
+            else if(e.getMessage().contains("CVC card is wrong!")) {
+                model.addAttribute("errorMessage", "CVC card is wrong!");
+            }
             System.out.println(e.getMessage());
             return "choose-card"; // Return the same view with error messages
         }
