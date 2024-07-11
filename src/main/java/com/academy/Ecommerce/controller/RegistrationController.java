@@ -1,8 +1,10 @@
 package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.DTO.RegisterDTO;
+import com.academy.Ecommerce.model.Cart;
 import com.academy.Ecommerce.model.Role;
 import com.academy.Ecommerce.model.User;
+import com.academy.Ecommerce.service.CartService;
 import com.academy.Ecommerce.service.RoleService;
 import com.academy.Ecommerce.service.UserService;
 import jakarta.mail.MessagingException;
@@ -27,6 +29,7 @@ import java.util.UUID;
 public class RegistrationController {
     private final UserService userService;
     private final RoleService roleService;
+    private final CartService cartService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
 
@@ -55,6 +58,9 @@ public class RegistrationController {
         }
         User user = createUserFromDTO(registerDTO);
         userService.saveUser(user);
+        Cart cart = new Cart();
+        cart.setUser(userService.findUserByEmail(user.getEmail()));
+        cartService.saveCart(cart);
         sendConfirmationEmail(user);
 
         return "redirect:/api/v1/register?success";
@@ -80,6 +86,7 @@ public class RegistrationController {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
+            // check port for final release.
             String htmlMsg = String.format(
                     "<p>Hello %s,</p>" +
                             "<p>To activate your account, please click the link below:</p>" +
