@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script th:src="@{/js/content-script.js}"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<section layout:fragment="content">
+<div class="container">
+  <h1 class="mt-5" th:text="${errorTitle}">Error</h1>
+  <div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Error Code: <span th:text="${statusCode}">Error Code</span></h4>
+    <p th:text="${errorMessage}">An unexpected error occurred.</p>
+  </div>
+  <a th:href="@{/}" class="btn btn-primary">Go to Homepage</a>
+</div>
+  <script type="module" th:src="@{/js/content-script.js}"></script>
+  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</section>
+</body>
+</html>
