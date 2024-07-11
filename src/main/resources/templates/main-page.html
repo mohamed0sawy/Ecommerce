@@ -105,7 +105,27 @@
             </div>
         </div>
     </div>
+    <script>
+        let cartClicked = false;
+
+        function toggleButton() {
+            const button = document.getElementById('cartBtn');
+
+            if (!cartClicked) {
+                button.innerHTML = '<i class="fa fa-minus mr-2"></i> -';
+                button.classList.remove('bg-cart');
+                button.classList.add('bg-update');
+            } else {
+                button.innerHTML = '<i class="fa fa-cart-plus mr-2"></i> Add to cart';
+                button.classList.remove('bg-update');
+                button.classList.add('bg-cart');
+            }
+
+            cartClicked = !cartClicked;
+        }
+    </script>
 </section>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
