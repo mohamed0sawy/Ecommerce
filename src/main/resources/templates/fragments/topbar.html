@@ -53,15 +53,14 @@
                 </a>
                 <ul aria-labelledby="navbarDropdownMenuAvatar" class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" th:href="@{/api/v1/products}">My profile</a>
+                        <a class="dropdown-item" th:href="@{/api/v1/profile}">My profile</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" th:href="@{/api/v1/products}">Settings</a>
+                        <a class="dropdown-item" th:href="@{/api/v1/profile/settings}">Settings</a>
                     </li>
                     <li>
                         <form th:action="@{/logout}" method="post">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                            <button type="submit" class="dropdown-item">Logout</button>
+                            <button type="submit" class="dropdown-item" style="color:#d80000">Logout</button>
                         </form>
                     </li>
                 </ul>
