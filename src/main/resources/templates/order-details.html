@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"><head>
+  <meta charset="UTF-8">
+  <title>Order Details</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<section layout:fragment="content">
+
+<div class="container mt-5">
+  <h1 class="mb-4">Order Details</h1>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Order ID: <span th:text="${order.id}"></span></h5>
+      <p class="card-text">Order Date: <span th:text="${order.orderDate}"></span></p>
+      <p class="card-text">Total Price: <span th:text="${order.totalPrice != null ? order.totalPrice : '0.00'}"></span></p>
+      <h5>Order Items:</h5>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Total Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${order.items}">
+          <td th:text="${item.product.name}"></td>
+          <td th:text="${item.quantity}"></td>
+          <td th:text="${item.quantity * item.product.price}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</section>
+</body>
+</html>

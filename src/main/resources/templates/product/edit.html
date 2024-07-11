@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit Product</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
@@ -21,6 +23,8 @@
     </style>
 </head>
 <body>
+<section layout:fragment="content">
+
 <div class="container">
     <h1>Edit Product</h1>
     <form th:action="@{/api/v1/products/edit/{id}(id=${product.id})}" th:object="${product}" method="post" enctype="multipart/form-data">
@@ -80,5 +84,6 @@
         reader.readAsDataURL(input.files[0]);
     }
 </script>
+</section>
 </body>
 </html>

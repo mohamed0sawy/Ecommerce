@@ -12,7 +12,7 @@
         <!-- Collapsible wrapper -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="/">
+            <a class="navbar-brand mt-2 mt-lg-0" href="/api/v1">
                 <img alt="Logo" height="80" loading="lazy"
                      th:src="@{/images/logo.png}">
             </a>
@@ -20,14 +20,17 @@
 
                 <!-- Left links -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Dashboard</a>
+                        <a class="nav-link" th:href="@{/api/v1/admins}">Admins</a>
                     </li>
+
                     <a class="nav-link" th:href="@{/api/v1/products}">Products</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/api/v1/categories}">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/api/v1/orders}">Orders</a>
                     </li>
 
                 </ul>
@@ -53,10 +56,10 @@
                 </a>
                 <ul aria-labelledby="navbarDropdownMenuAvatar" class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" th:href="@{/api/v1/products}">My profile</a>
+                        <a class="dropdown-item" th:href="@{/api/v1/profile}">My profile</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" th:href="@{/api/v1/products}">Settings</a>
+                        <a class="dropdown-item" th:href="@{/api/v1/profile/settings}">Settings</a>
                     </li>
                     <li>
                         <form th:action="@{/logout}" method="post">
