@@ -34,9 +34,15 @@
     </style>
 </head>
 <body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+
 <header layout:fragment="header">
     <div layout:insert="~{fragments/searchbar}"></div>
 </header>
+
+
 <section layout:fragment="content">
     <div class="container-fluid">
         <div class="row">
