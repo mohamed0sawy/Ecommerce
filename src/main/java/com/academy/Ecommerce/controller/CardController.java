@@ -1,8 +1,11 @@
 package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.DTO.ValidationRequest;
+import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.CardService;
+import jakarta.mail.Session;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,15 +31,17 @@ public class CardController {
 
     @PostMapping("/cardForm")
     public String addCard(@ModelAttribute("validationRequest") ValidationRequest validationRequest, BindingResult result, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
         if (result.hasErrors()) {
             return "add-card";
         }
 
         System.out.println(validationRequest.getNumber());
         try {
-            cardService.validateCard(1L, validationRequest);
+            cardService.validateCard(user.getId(), validationRequest);
             System.out.println("Card Validated");
-            cardService.addCardToUser(1L,validationRequest.getNumber());
+            cardService.addCardToUser(user.getId(), validationRequest.getNumber());
             System.out.println("Card added to user successfully");
             return "redirect:/api/v1/payment/chooseCard";
         } catch (Exception e) {

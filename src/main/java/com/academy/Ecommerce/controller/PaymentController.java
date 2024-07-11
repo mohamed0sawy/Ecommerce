@@ -3,8 +3,11 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.DTO.ProcessPaymentRequest;
 import com.academy.Ecommerce.DTO.ValidateCVCRequest;
+import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.CardService;
 import com.academy.Ecommerce.service.PaymentService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,8 +34,10 @@ public class PaymentController {
     }
 
     @GetMapping("/chooseCardForm")
-    public String getChooseCardForm(Model model) {
-        List<String> cardNumbers = cardService.getCardNumbersOfUser(1L); // Assuming user ID 1
+    public String getChooseCardForm(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        List<String> cardNumbers = cardService.getCardNumbersOfUser(user.getId()); // Assuming user ID 1
         ValidateCVCRequest validateCVCRequest = new ValidateCVCRequest(); // Ensure this matches your ValidateCVCRequest class
 
         model.addAttribute("cardNumbers", cardNumbers);
@@ -42,24 +47,25 @@ public class PaymentController {
     }
 
     @PostMapping("/processPayment")
-    public String processPayment(@ModelAttribute ValidateCVCRequest validateCVCRequest, BindingResult result, Model model) {
-        ProcessPaymentRequest processPaymentRequest = new ProcessPaymentRequest(validateCVCRequest.getCardNumber(), 100L);
+    public String processPayment(@ModelAttribute ValidateCVCRequest validateCVCRequest, BindingResult result, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        Double totalPrice = (Double) session.getAttribute("totalPrice");
+        ProcessPaymentRequest processPaymentRequest = new ProcessPaymentRequest(validateCVCRequest.getCardNumber(), totalPrice.longValue());
         if (result.hasErrors()) {
-            // Populate model with necessary attributes for the choose-card.html
-            List<String> cardNumbers = cardService.getCardNumbersOfUser(1L); // Assuming user ID 1
+            List<String> cardNumbers = cardService.getCardNumbersOfUser(user.getId());
             model.addAttribute("cardNumbers", cardNumbers);
             model.addAttribute("validateCVCRequest", validateCVCRequest);
-            return "choose-card"; // Return the same view with error messages
+            return "choose-card";
         }
 
-        // Call the service to validate CVC
         try {
             paymentService.processPayment(validateCVCRequest, processPaymentRequest);
             System.out.println("Done and balance reduced!");
             return "redirect:/api/v1/payment/chooseCardForm";
         } catch (Exception e) {
             // Handle error and populate model with necessary attributes for the choose-card.html
-            List<String> cardNumbers = cardService.getCardNumbersOfUser(1L); // Assuming user ID 1
+            List<String> cardNumbers = cardService.getCardNumbersOfUser(user.getId()); // Assuming user ID 1
             model.addAttribute("cardNumbers", cardNumbers);
             model.addAttribute("validateCVCRequest", validateCVCRequest);
             model.addAttribute("processPaymentRequest", processPaymentRequest);
