@@ -4,31 +4,46 @@
     <title>Product Details</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
+        .product-card {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+            /*margin: 20px;*/
+            padding: 20px;
+            /*border: 1px solid #ddd;*/
+            background-color: #fff;
+            /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+        }
         .product-img {
             width: 100%;
-            height: 400px;
+            height: auto;
+            max-height: 500px;
             object-fit: cover;
+            border-radius: 10px;
         }
-        .product-card {
-            max-width: 600px;
-            margin: auto;
-            margin-top: 50px;
+        .left-side, .right-side {
+            flex: 1;
+            padding: 20px;
         }
-        .product-details {
-            margin-top: 20px;
+        .right-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .product-info {
-            text-align: center;
+        .product-name {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .product-description {
+            margin: 20px 0;
+        }
+        .product-price {
+            font-size: 1.5rem;
+            color: #28a745;
         }
         .btn-add-to-cart {
             margin-top: 20px;
-        }
-        .thumbnail_images img {
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-        .right-side {
-            padding: 20px;
         }
         .heart {
             font-size: 24px;
@@ -43,19 +58,6 @@
         .ratings span {
             margin-left: 10px;
         }
-        .colors {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .colors li {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin: 0 5px;
-            cursor: pointer;
-        }
         .buttons {
             margin-top: 20px;
         }
@@ -63,6 +65,11 @@
             display: flex;
             align-items: center;
             margin-top: 20px;
+        }
+        .bg-cart {
+            background-color: #28a745;
+            color: white;
+            border: none;
         }
         .search-option .inputs {
             margin: 0 10px;
@@ -78,56 +85,56 @@
     </style>
 </head>
 <body>
+<header layout:fragment="header">
+    <div layout:insert="~{fragments/searchbar}"></div>
+</header>
 <section layout:fragment="content">
-    <div class="container fluid">
-        <div class="card">
-            <div class="row g-0">
-                <div class="col-md-6 border-end">
-                    <div class="d-flex flex-column justify-content-center">
-                        <div class="main_image">
-                            <img th:src="@{${product.imageUrl}}" id="main_product_image" class="img-fluid product-img">
-                        </div>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="p-3 bg-light position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/}">All Products</a>
+                        </li>
+                        <li th:each="category : ${categories}" class="nav-item">
+                            <a class="nav-link" th:href="@{/filter(category=${category.getName()})}" th:text="${category.getName()}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="col-md-9 col-lg-10">
 
+            <div class="product-card">
+            <div class="left-side">
+                <img th:src="@{${product.imageUrl}}" class="img-fluid product-img" alt="Product Image">
+            </div>
+            <div class="right-side">
+                <div class="product-info">
+                    <h3 class="product-name" th:text="${product.name}">Product Name</h3>
+                    <div class="mt-2 content">
+                        <p class="product-description" th:text="${product.description}">Product Description</p>
+                    </div>
+                    <h3 class="product-price" th:text="'$ ' + ${product.price}">Product Price</h3>
+                    <div class="ratings d-flex flex-row align-items-center">
+                        <!--
+                        <div class="d-flex flex-row">
+                            <i class='bx bxs-star' th:each="star : ${#numbers.sequence(1, product.rating)}"></i>
+                            <i class='bx bx-star' th:each="star : ${#numbers.sequence(product.rating + 1, 5)}"></i>
+                        </div>
+                        <span th:text="${product.reviews} + ' reviews'">441 reviews</span>
+                        -->
+                    </div>
+                    <div class="buttons d-flex flex-row mt-5 gap-3">
+                        <button type="button" class="btn bg-cart"><i
+                                class="fa fa-cart-plus mr-2"></i> Add to cart</button>
+                    </div>
+
+                        <i class='bx bx-share-alt share'></i>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="p-3 right-side">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h3 th:text="${product.name}">Product Name</h3>
-                            <span class="heart"><i class='bx bx-heart'></i></span>
-                        </div>
-                        <div class="mt-2 pr-3 content">
-                            <p th:text="${product.description}">Product Description</p>
-                        </div>
-                        <h3 th:text="'$ ' + ${product.price}">Product Price</h3>
-                        <div class="ratings d-flex flex-row align-items-center">
-<!--                            <div class="d-flex flex-row">-->
-<!--                                <i class='bx bxs-star' th:each="star : ${#numbers.sequence(1, product.rating)}"></i>-->
-<!--                                <i class='bx bx-star' th:each="star : ${#numbers.sequence(product.rating + 1, 5)}"></i>-->
-<!--                            </div>-->
-<!--                            <span th:text="${product.reviews} + ' reviews'">441 reviews</span>-->
-                        </div>
-                        <div class="mt-5">
-<!--                            <span class="fw-bold">Color</span>-->
-<!--                            <div class="colors">-->
-<!--                                <ul id="marker">-->
-<!--                                    <li id="marker-1" th:each="color : ${product.colors}"></li>-->
-<!--                                </ul>-->
-<!--                            </div>-->
-                        </div>
-                        <div class="buttons d-flex flex-row mt-5 gap-3">
-<!--                            <button class="btn btn-outline-dark">Buy Now</button>-->
-                            <button class="btn btn-dark">Add to Basket</button>
-                        </div>
-                        <div class="search-option">
-                            <i class='bx bx-search-alt-2 first-search'></i>
-                            <div class="inputs">
-                                <input type="text" name="">
-                            </div>
-                            <i class='bx bx-share-alt share'></i>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
             </div>
         </div>
     </div>
