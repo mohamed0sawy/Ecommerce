@@ -5,30 +5,55 @@
 <head>
     <script th:src="@{/js/content-script.js}"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
 </head>
 <body>
-<div class="container">
-    <h1>Admin List</h1>
-    <a class="btn btn-primary" th:href="@{/admin/add}">Add Admin</a>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="admin : ${admins}">
-            <td th:text="${admin.id}"></td>
-            <td th:text="${admin.username}"></td>
-            <td>
-                <a class="btn btn-secondary" th:href="@{/admin/edit/{id}(id=${admin.id})}">Edit</a>
-                <a class="btn btn-danger" th:href="@{/admin/delete/{id}(id=${admin.id})}">Delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<section layout:fragment="content">
+
+    <div class="container">
+        <h1>Admin List</h1>
+        <a class="btn btn-primary" th:href="@{/admins/create}">Add Admin</a>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="admin : ${admins}">
+                <td th:text="${admin.id}">ID Placeholder</td>
+                <td th:text="${admin.username}">Username Placeholder</td>
+
+
+                <td>
+                    <div th:if="${not #lists.contains(admin.roles,superAdminRole)}">
+                    <button class="btn" onclick="toggleAdminStatus(this)"
+                            th:data-admin-id="${admin.id}" th:data-admin-enabled="${admin.enabled}"
+                            th:classappend="${admin.enabled} ? 'btn-danger' : 'btn-success'">
+                        <span th:text="${admin.enabled ? 'Disable' : 'Enable'}"></span>
+                    </button>
+
+                    <a class="btn btn-secondary" th:href="@{/admins/edit/{id}(id=${admin.id})}">Edit</a>
+                    <!-- Example Thymeleaf code in your template -->
+                        <a class="btn btn-danger" th:href="@{/admins/delete/{id}(id=${admin.id})}">Delete</a>
+
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</section>
+
+
+
 </body>
+
 </html>

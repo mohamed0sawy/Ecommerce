@@ -1,25 +1,36 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout}"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <script th:src="@{/js/content-script.js}"></script>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <title>Create Admin</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
 </head>
 <body>
 <div class="container">
-  <h1 th:text="${admin.id == null} ? 'Add Admin' : 'Edit Admin'"></h1>
-  <form th:action="@{/admin/add}" th:object="${admin}" method="post">
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" id="username" class="form-control" th:field="*{username}" required>
+  <h1>Create Admin</h1>
+  <form th:action="@{/admins/create}" th:object="${user}" method="post">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" id="username" class="form-control" th:field="*{username}" />
+      <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
     </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" id="password" class="form-control" th:field="*{password}" required>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" class="form-control" th:field="*{email}" />
+      <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a th:href="@{/admins}" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
