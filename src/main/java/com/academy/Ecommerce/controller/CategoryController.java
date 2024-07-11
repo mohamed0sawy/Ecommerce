@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/categories")
+@RequestMapping("/api/v1/categories")
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
 @RequiredArgsConstructor
 public class CategoryController {
@@ -40,7 +40,7 @@ public class CategoryController {
             return "category/create";
         }
         categoryService.save(category);
-        return "redirect:/categories";
+        return "redirect:/api/v1/categories";
     }
 
     @GetMapping("/edit/{id}")
@@ -62,12 +62,12 @@ public class CategoryController {
             return "category/update";
         }
         categoryService.save(category);
-        return "redirect:/categories";
+        return "redirect:/api/v1/categories";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteCategory(@PathVariable("id") long id, Model model) {
         categoryService.deleteById(id);
-        return "redirect:/categories";
+        return "redirect:/api/v1/categories";
     }
 }

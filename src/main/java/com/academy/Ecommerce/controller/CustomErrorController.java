@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class CustomErrorController implements ErrorController {
 
-    @RequestMapping("/error")
+    @RequestMapping("/api/v1/error")
     public String handleError(HttpServletRequest request, Model model) {
         Object status = request.getAttribute("jakarta.servlet.error.status_code");
         String errorMessage;

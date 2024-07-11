@@ -27,7 +27,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/admins")
+@RequestMapping("/api/v1/admins")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
 public class AdminController {
@@ -79,7 +79,7 @@ public class AdminController {
         emailService.sendEmail(user.getEmail(), "Your Admin Account", "Your password is: " + randomPassword);
 
         redirectAttributes.addFlashAttribute("message", "Admin created successfully and email sent!");
-        return "redirect:/admins";
+        return "redirect:/api/v1/admins";
     }
 
 
@@ -110,7 +110,7 @@ public class AdminController {
         admin.setRoles(existingAdmin.getRoles());
 
         userService.saveUser(admin);
-        return "redirect:/admins";
+        return "redirect:/api/v1/admins";
     }
 
 
@@ -118,7 +118,7 @@ public class AdminController {
     public String deleteAdmin(@PathVariable Long id) {
        User admin= userService.findUserById(id);
         userService.deleteUser(admin);
-        return "redirect:/admins";
+        return "redirect:/api/v1/admins";
     }
     @PutMapping(value = "/toggle-status/{adminId}")
     public ResponseEntity<?> toggleAdminStatus(@PathVariable Long adminId) {

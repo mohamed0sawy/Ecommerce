@@ -14,7 +14,7 @@
             <!-- Navbar brand -->
             <a class="navbar-brand mt-2 mt-lg-0" href="/">
                 <img alt="Logo" height="80" loading="lazy"
-                     th:src="@{images/logo.png}">
+                     th:src="@{/images/logo.png}">
             </a>
             <div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')">
 
@@ -24,10 +24,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Dashboard</a>
                     </li>
-                    <a class="nav-link" th:href="@{/products}">Products</a>
+                    <a class="nav-link" th:href="@{/api/v1/products}">Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/categories}">Categories</a>
+                        <a class="nav-link" th:href="@{/api/v1/categories}">Categories</a>
                     </li>
 
                 </ul>
@@ -40,7 +40,7 @@
         <!-- Right elements -->
         <div class="d-flex align-items-center">
             <!-- Icon -->
-            <a class="text-reset me-3" href="#">
+            <a class="text-reset me-3" th:href="@{/api/v1/cart}">
                 <i class="fas fa-shopping-cart"></i>
             </a>
 
@@ -53,10 +53,10 @@
                 </a>
                 <ul aria-labelledby="navbarDropdownMenuAvatar" class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" th:href="@{/products}">My profile</a>
+                        <a class="dropdown-item" th:href="@{/api/v1/products}">My profile</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" th:href="@{/products}">Settings</a>
+                        <a class="dropdown-item" th:href="@{/api/v1/products}">Settings</a>
                     </li>
                     <li>
                         <form th:action="@{/logout}" method="post">

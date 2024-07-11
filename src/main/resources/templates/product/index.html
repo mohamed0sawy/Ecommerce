@@ -16,7 +16,7 @@
 <body>
 <div class="container">
   <h1>Product List</h1>
-  <a class="btn btn-primary mb-3" th:href="@{/products/create}">Add New Product</a>
+  <a class="btn btn-primary mb-3" th:href="@{/api/v1/products/create}">Add New Product</a>
   <table class="table table-striped">
     <thead>
     <tr>
@@ -36,8 +36,8 @@
       <td th:text="${product.price}">Price</td>
       <td th:text="${product.stock}">Stock</td>
       <td>
-        <a class="btn btn-secondary" th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
-        <a class="btn btn-danger" th:href="@{/products/delete/{id}(id=${product.id})}">Delete</a>
+        <a class="btn btn-secondary" th:href="@{/api/v1/products/edit/{id}(id=${product.id})}">Edit</a>
+        <a class="btn btn-danger" th:href="@{/api/v1/products/delete/{id}(id=${product.id})}">Delete</a>
       </td>
     </tr>
     </tbody>

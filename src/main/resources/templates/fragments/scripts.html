@@ -14,7 +14,7 @@
         var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
 
         // Perform an AJAX request to toggle admin status
-        var url = '/admins/toggle-status/' + adminId;
+        var url = '/api/v1/admins/toggle-status/' + adminId;
         fetch(url, {
         method: 'PUT',
         headers: {

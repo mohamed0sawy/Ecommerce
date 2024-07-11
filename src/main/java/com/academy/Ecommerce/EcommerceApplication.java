@@ -1,37 +1,26 @@
 package com.academy.Ecommerce;
 
-//import com.academy.Ecommerce.model.Customer;
-import com.academy.Ecommerce.model.User;
-import com.academy.Ecommerce.repository.RoleRepository;
-import com.academy.Ecommerce.repository.UserRepository;
-import org.springframework.boot.CommandLineRunner;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.context.annotation.Bean;
-import com.academy.Ecommerce.model.Role;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
-import java.util.Arrays;
-import java.util.List;
-
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableFeignClients
 public class EcommerceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(EcommerceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EcommerceApplication.class, args);
+    }
 
-	/*
-	 * use this code for just one time to fill the DB with sample data.
-	 * make sure to comment this code after run the app for the first time.
-	 * this code is written before implementing login and registration features.
-	 * make sure that you created the necessary DB schema and configure the .properties file.
-	 *
-	 */
+    /*
+     * use this code for just one time to fill the DB with sample data.
+     * make sure to comment this code after run the app for the first time.
+     * this code is written before implementing login and registration features.
+     * make sure that you created the necessary DB schema and configure the .properties file.
+     *
+     */
 //	@Bean
 //	public CommandLineRunner commandLineRunner(UserRepository userRepository,
 //											   RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder){

@@ -3,10 +3,10 @@
 
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link" th:href="@{/}">All Products</a>
+        <a class="nav-link" th:href="@{/api/v1/}">All Products</a>
       </li>
       <li th:each="category : ${categories}" class="nav-item">
-        <a class="nav-link" th:href="@{/filter(category=${category})}" th:text="${category}"></a>
+        <a class="nav-link" th:href="@{/api/v1/filter(category=${category})}" th:text="${category}"></a>
       </li>
     </ul>
   </div>

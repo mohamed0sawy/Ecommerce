@@ -4,6 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <script th:src="@{/js/content-script.js}"></script>
+    <meta name="csrf-token" th:content="${_csrf.token}" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .card {
@@ -44,10 +45,10 @@
                 <div class="p-3 bg-light position-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/}">All Products</a>
+                            <a class="nav-link" th:href="@{/api/v1/}">All Products</a>
                         </li>
                         <li th:each="category : ${categories}" class="nav-item">
-                            <a class="nav-link" th:href="@{/filter(category=${category})}" th:text="${category}"></a>
+                            <a class="nav-link" th:href="@{/api/v1/filter(category=${category})}" th:text="${category}"></a>
                         </li>
                     </ul>
                 </div>
@@ -67,13 +68,18 @@
                             <div class="card-body bg-light text-center">
                                 <div class="mb-2">
                                     <h6 class="font-weight-semibold mb-2">
-                                        <a th:href="@{/products/{id}(id=${product.id})}" class="text-default mb-2" th:text="${product.name}"></a>
+                                        <a th:href="@{/api/v1/products/{id}(id=${product.id})}" class="text-default mb-2" th:text="${product.name}"></a>
                                     </h6>
-                                    <a th:href="@{/filter(category=${product.category.getName()})}" class="text-muted" th:text="${product.category.getName()}"></a>
+                                    <a th:href="@{/api/v1/filter(category=${product.category.getName()})}" class="text-muted" th:text="${product.category.getName()}"></a>
                                 </div>
                                 <h3 class="mb-0 font-weight-semibold" th:text="'$ ' + ${product.price}"></h3>
-                                <button type="button" class="btn bg-cart"><i
-                                        class="fa fa-cart-plus mr-2"></i> Add to cart</button>
+                                <form id="add-to-cart-form" th:action="@{/api/v1/cart/add}" method="get">
+                                    <input type="hidden" name="product_id" th:value="${product.id}" />
+                                    <button type="submit" class="btn bg-cart">
+                                        <i class="fa fa-cart-plus mr-2"></i> Add to cart
+                                    </button>
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -84,20 +90,20 @@
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">
                             <li class="page-item" th:classappend="${pagedProducts.first} ? 'disabled'">
-                                <a class="page-link" th:href="@{/(page=0)}">First</a>
+                                <a class="page-link" th:href="@{/api/v1/(page=0)}">First</a>
                             </li>
                             <li class="page-item" th:classappend="${pagedProducts.first} ? 'disabled'">
-                                <a class="page-link" th:href="@{/(page=${pagedProducts.number - 1})}">Previous</a>
+                                <a class="page-link" th:href="@{/api/v1/(page=${pagedProducts.number - 1})}">Previous</a>
                             </li>
                             <li th:classappend="${page == pagedProducts.number} ? ' active' : ''"
                                 th:each="page : ${#numbers.sequence(0, pagedProducts.totalPages - 1)}">
-                                <a class="page-link" th:href="@{/(page=${page})}" th:text="${page + 1}"></a>
+                                <a class="page-link" th:href="@{/api/v1/(page=${page})}" th:text="${page + 1}"></a>
                             </li>
                             <li class="page-item" th:classappend="${pagedProducts.last} ? 'disabled'">
-                                <a class="page-link" th:href="@{/(page=${pagedProducts.number + 1})}">Next</a>
+                                <a class="page-link" th:href="@{/api/v1/(page=${pagedProducts.number + 1})}">Next</a>
                             </li>
                             <li class="page-item" th:classappend="${pagedProducts.last} ? 'disabled'">
-                                <a class="page-link" th:href="@{/(page=${pagedProducts.totalPages - 1})}">Last</a>
+                                <a class="page-link" th:href="@{/api/v1/(page=${pagedProducts.totalPages - 1})}">Last</a>
                             </li>
                         </ul>
                     </nav>
@@ -106,24 +112,55 @@
         </div>
     </div>
     <script>
-        let cartClicked = false;
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('add-to-cart-form');
+            const button = form.querySelector('button');
 
-        function toggleButton() {
-            const button = document.getElementById('cartBtn');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const productId = form.querySelector('input[name="product_id"]').value;
+                const url = `/api/v1/cart/add?product_id=${productId}`;
 
-            if (!cartClicked) {
-                button.innerHTML = '<i class="fa fa-minus mr-2"></i> -';
-                button.classList.remove('bg-cart');
-                button.classList.add('bg-update');
-            } else {
-                button.innerHTML = '<i class="fa fa-cart-plus mr-2"></i> Add to cart';
-                button.classList.remove('bg-update');
-                button.classList.add('bg-cart');
-            }
+                // Change button text and appearance
+                button.innerHTML = '<i class="fa fa-minus mr-2"></i> Update quantity';
+                button.classList.add('btn-success');
+                button.classList.remove('btn-primary');
 
-            cartClicked = !cartClicked;
-        }
+                // Redirect to the URL
+                window.location.href = url;
+            });
+        });
     </script>
+
+    <!--    <script>-->
+<!--        document.addEventListener('DOMContentLoaded', function() {-->
+<!--            document.querySelectorAll('.bg-cart').forEach(button => {-->
+<!--                button.addEventListener('click', function() {-->
+<!--                    const productId = this.getAttribute('data-product-id');-->
+<!--                    const url = `/api/v1/cart/add?product_id=${productId}`;-->
+
+<!--                    fetch(url, {-->
+<!--                        method: 'GET',-->
+<!--                        headers: {-->
+<!--                            'Content-Type': 'application/json',-->
+<!--                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')-->
+<!--                        },-->
+<!--                    })-->
+<!--                        .then(response => {-->
+<!--                            if (response.redirected) {-->
+<!--                                window.location.href = response.url;-->
+<!--                            } else if (response.ok) {-->
+<!--                                this.innerHTML = '<i class="fa fa-minus mr-2"></i> Update quantity';-->
+<!--                                this.classList.add('btn-success');-->
+<!--                                this.classList.remove('btn-primary');-->
+<!--                            }-->
+<!--                        })-->
+<!--                        .catch(error => console.error('Error:', error));-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+
 </section>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

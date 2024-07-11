@@ -73,7 +73,7 @@ public class CartController {
         } else {
             cartItemService.incrementQuantityByOne(cart, product);
         }
-        return "redirect:/api/v1/main";
+        return "redirect:/api/v1/";
     }
 
     @GetMapping("/remove")

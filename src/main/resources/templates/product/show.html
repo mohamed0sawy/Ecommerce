@@ -95,10 +95,10 @@
                 <div class="p-3 bg-light position-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/}">All Products</a>
+                            <a class="nav-link" th:href="@{/api/v1/}">All Products</a>
                         </li>
                         <li th:each="category : ${categories}" class="nav-item">
-                            <a class="nav-link" th:href="@{/filter(category=${category.getName()})}" th:text="${category.getName()}"></a>
+                            <a class="nav-link" th:href="@{/api/v1/filter(category=${category.getName()})}" th:text="${category.getName()}"></a>
                         </li>
                     </ul>
                 </div>
@@ -126,7 +126,7 @@
                         -->
                     </div>
                     <div class="buttons d-flex flex-row mt-5 gap-3">
-                        <button type="button" class="btn bg-cart"><i
+                        <button type="button" class="btn bg-cart" th:href="@{/api/v1/cart/add}"><i
                                 class="fa fa-cart-plus mr-2"></i> Add to cart</button>
                     </div>
 

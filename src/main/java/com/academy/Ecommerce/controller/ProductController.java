@@ -18,9 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -80,21 +81,24 @@ public class ProductController {
 
         productService.saveProduct(product);
 
-        return "redirect:/products";
+        return "redirect:/api/v1/products";
     }
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
 
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Product product = productService.getProductById(id);
-        if(product == null){
-           throw new IllegalArgumentException("Invalid product Id:" + id);
+        Optional<Product> productOptional = productService.findProductById(id);
+        if(productOptional.isPresent()){
+            Product product = productOptional.get();
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categories);
+            return "product/edit";
 
+        }else{
+            throw new IllegalArgumentException("Invalid product Id:" + id);
         }
-        List<Category> categories = categoryService.findAll();
-        model.addAttribute("product", product);
-        model.addAttribute("categories", categories);
-        return "product/edit";
+
     }
 
     @PostMapping("/edit/{id}")
@@ -118,7 +122,7 @@ public class ProductController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "redirect:/products";
+        return "redirect:/api/v1/products";
     }
 
     @GetMapping("/delete/{id}")
@@ -126,19 +130,21 @@ public class ProductController {
 
     public String deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
-        return "redirect:/products";
+        return "redirect:/api/v1/products";
     }
     @GetMapping("/{id}")
     public String showProductDetails(@PathVariable Long id, Model model) {
-        Product product = productService.getProductById(id);
-        if (product == null) {
+        Optional<Product> productOptional = productService.findProductById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categoryService.findAll());
+            return "product/show";
+
+        }else{
             throw new IllegalArgumentException("Invalid product Id:" + id);
-
         }
-        model.addAttribute("product", product);
-        model.addAttribute("categories", categoryService.findAll());
 
-        return "product/show";
     }
 
 }
