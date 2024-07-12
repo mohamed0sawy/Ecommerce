@@ -73,14 +73,13 @@ public class OrderController {
     @GetMapping("/cartItems")
     public String getCartItems(HttpServletRequest request, @RequestParam("payment") String paymentMethod) {
         HttpSession session = request.getSession();
-
         List<CartItem> cartItemList = (List<CartItem>) session.getAttribute("checkedCartItems");
-        Long userId = (Long) session.getAttribute("userId");
-        Long selectedAddressId = (Long) session.getAttribute("selectedAddressId");
 
-        User user = new User();
+        User user = (User) session.getAttribute("user");
+        Long userId = user.getId();
         user.setId(userId);
 
+        Long selectedAddressId = (Long) session.getAttribute("selectedAddressId");
         Address address = addressService.getAddressById(selectedAddressId);
         address.setUser(user);
 
