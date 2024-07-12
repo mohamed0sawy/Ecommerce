@@ -15,15 +15,16 @@ public class Card {
     private Long id;
 
     @NonNull
-    @Column(length = 16, unique = true)
-    private String cardNumber;
+    @Column(length = 256, unique = true)
+    private String cardNumberEncrypted;
 
     @NonNull
-    private Long pin;
+    @Column(length = 256)
+    private String pinEncrypted;
 
     @NonNull
-    @Column(length = 3)
-    private Long cvc;
+    @Column(length = 256)
+    private String cvcEncrypted;
 
     @NonNull
     @Column(length = 2)
@@ -36,4 +37,11 @@ public class Card {
     @Enumerated(EnumType.STRING)
     private CardStatus status;
 
+    @Transient
+    private String cardNumber; // Transient field to hold plain card number for processing
+    @Transient
+    private Long pin; // Transient field to hold plain pin for processing
+    @Transient
+    private Long cvc; // Transient field to hold plain cvc for processing
 }
+

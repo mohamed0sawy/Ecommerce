@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -14,9 +15,12 @@ public class CardBalance {
     private Long id;
 
     @NonNull
-    @Column(length = 16, unique = true)
-    private String cardNumber;
+    @Column(length = 256, unique = true)
+    private String cardNumberEncrypted;
 
     @NonNull
     private Long balance;
+
+    @Transient
+    private String cardNumber;
 }

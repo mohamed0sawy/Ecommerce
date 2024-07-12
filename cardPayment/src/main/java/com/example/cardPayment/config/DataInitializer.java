@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
     private final CardBalanceService cardBalanceService;
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
-
 
     @Override
     public void run(String... args) throws Exception {
@@ -48,8 +48,6 @@ public class DataInitializer implements CommandLineRunner {
         cardBalanceService.saveCardBalance(balance4);
         cardBalanceService.saveCardBalance(balance5);
 
-
-        logger.info("Finished creating and saving new cards balances.");
-
+        logger.info("Finished creating and saving new card balances.");
     }
 }
