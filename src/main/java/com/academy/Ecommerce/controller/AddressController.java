@@ -2,7 +2,6 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.exception.NotFoundException;
 import com.academy.Ecommerce.model.Address;
-import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.AddressService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -12,15 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import com.academy.Ecommerce.model.Address;
-import com.academy.Ecommerce.model.CartItem;
-import com.academy.Ecommerce.service.AddressService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,15 +37,15 @@ public class AddressController {
     public String createAddress(@Valid @ModelAttribute Address address, BindingResult result,
                                 HttpServletRequest request){
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
             throw new NotFoundException("User ID not found in session");
         }
         if(result.hasErrors()){
             return "address-form";
         }
-        addressService.createAddress(address, user.getId());
-        return "redirect:/api/v1/addresses/user/" + user.getId();
+        addressService.createAddress(address, userId);
+        return "redirect:/api/v1/addresses/user/" + userId;
     }
 
     @GetMapping("/created")
@@ -105,19 +95,5 @@ public class AddressController {
         Address address = addressService.getAddressById(id);
         addressService.deleteAddressById(id);
         return "redirect:/api/v1/addresses/user/" + address.getUser().getId();
-    }
-
-    @GetMapping("/list")
-    public String listUserAddress(@RequestParam("user_id") Long userId, Model model){
-        List<Address> addressList = addressService.getAddressesByUserId(userId);
-        model.addAttribute("addressList", addressList);
-        return "address-checkList";
-    }
-
-    @PostMapping("/select")
-    public String selectAddress(@RequestParam("addressId") Long addressId, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.setAttribute("selectedAddressId", addressId);
-        return "redirect:/api/v1/payment";
     }
 }
