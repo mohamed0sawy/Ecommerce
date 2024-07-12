@@ -1,13 +1,11 @@
 package com.academy.Ecommerce.controller;
 
-import com.academy.Ecommerce.model.Address;
-import com.academy.Ecommerce.model.Order;
-import com.academy.Ecommerce.model.OrderItem;
-import com.academy.Ecommerce.model.User;
-import com.academy.Ecommerce.model.CartItem;
+import com.academy.Ecommerce.model.*;
 import com.academy.Ecommerce.repository.OrderItemRepository;
 import com.academy.Ecommerce.repository.OrderRepository;
 import com.academy.Ecommerce.service.AddressService;
+import com.academy.Ecommerce.service.CartItemService;
+import com.academy.Ecommerce.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,12 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private CartItemService cartItemService;
 
     @GetMapping
     public String getAllOrders(Model model, HttpServletRequest request) {
@@ -99,6 +103,9 @@ public class OrderController {
             orderItems.add(orderItem);
             orderItemRepository.saveAll(orderItems);
         }
+        Cart cart = cartService.findCartByUserId(userId);
+        Long cartId = cart.getId();
+        cartItemService.deleteCartItemsByCartId(cartId);
         return "redirect:/api/v1/orders/details";
     }
 }
