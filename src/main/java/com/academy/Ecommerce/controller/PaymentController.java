@@ -63,24 +63,31 @@ public class PaymentController {
         try {
             paymentService.processPayment(validateCVCRequest, processPaymentRequest);
             System.out.println("Done and balance reduced!");
-            return "redirect:/api/v1/payment/chooseCardForm";
+            return "redirect:/api/v1/orders/cartItems";  // Redirect to cartItems after successful payment
         } catch (FeignException e) {
             // Handle error and populate model with necessary attributes for the choose-card.html
             List<String> cardNumbers = cardService.getCardNumbersOfUser(user.getId()); // Assuming user ID 1
             model.addAttribute("cardNumbers", cardNumbers);
             model.addAttribute("validateCVCRequest", validateCVCRequest);
             model.addAttribute("processPaymentRequest", processPaymentRequest);
-//            model.addAttribute("errorMessage", "Balance Not Enough");
-            if(e.getMessage().contains("Insufficient funds!")) {
+
+            if (e.getMessage().contains("Insufficient funds!")) {
                 model.addAttribute("errorMessage", "Insufficient funds!");
-            }
-            else if(e.getMessage().contains("CVC card is wrong!")) {
+            } else if (e.getMessage().contains("CVC card is wrong!")) {
                 model.addAttribute("errorMessage", "CVC card is wrong!");
             }
             System.out.println(e.getMessage());
             return "choose-card"; // Return the same view with error messages
+        } catch (Exception e) {
+            List<String> cardNumbers = cardService.getCardNumbersOfUser(user.getId()); // Assuming user ID 1
+            model.addAttribute("cardNumbers", cardNumbers);
+            model.addAttribute("validateCVCRequest", validateCVCRequest);
+            model.addAttribute("errorMessage", "An unexpected error occurred.");
+            System.out.println(e.getMessage());
+            return "choose-card"; // Return the same view with error messages
         }
     }
+
 
 
 }
