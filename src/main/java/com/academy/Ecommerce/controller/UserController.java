@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping("/create")
     public String createUser(@ModelAttribute("user") User user, HttpServletRequest request, Model model) {
-        User createdUser = userService.createUser(user);
+        User createdUser = userService.saveUser(user);
 
         HttpSession session = request.getSession();
         session.setAttribute("userId", createdUser.getId());

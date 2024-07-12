@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{/js/content-script.js}"></script>
+<!--    <meta name="csrf-token" th:content="${_csrf.token}" />-->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+            width: 100%; /* Ensure card takes full width of its container */
+            padding: 15px; /* Add padding inside the card */
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+        .star {
+            color: orange;
+        }
+        .bg-cart {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .card-body {
+            height: 200px; /* Adjust as needed */
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+
+<header layout:fragment="header">
+    <div layout:insert="~{fragments/searchbar}"></div>
+</header>
+
+
+<section layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="p-3 bg-light position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/api/v1/}">All Products</a>
+                        </li>
+                        <li th:each="category : ${categories}" class="nav-item">
+                            <a class="nav-link" th:href="@{/api/v1/filter(category=${category})}" th:text="${category}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Product Cards -->
+            <div class="col-md-9 col-lg-10">
+                <div class="row">
+                    <div class="col-md-4 mt-2" th:each="product : ${pagedProducts}">
+                        <div  class="card">
+                            <div class="card-body">
+                                <div class="card-img-actions">
+                                    <img th:src="@{${product.imageUrl}}" class="card-img img-fluid" width="96"
+                                         height="150" alt="Product Image">
+                                </div>
+                            </div>
+                            <div class="card-body bg-light text-center">
+                                <div class="mb-2">
+                                    <h6 class="font-weight-semibold mb-2">
+                                        <a th:href="@{/api/v1/products/{id}(id=${product.id})}" class="text-default mb-2" th:text="${product.name}"></a>
+                                    </h6>
+                                    <a th:href="@{/api/v1/filter(category=${product.category.getName()})}" class="text-muted" th:text="${product.category.getName()}"></a>
+                                </div>
+                                <h3 class="mb-0 font-weight-semibold" th:text="'$ ' + ${product.price}"></h3>
+                                <form id="add-to-cart-form" th:action="@{/api/v1/cart/add}" method="get">
+                                    <input type="hidden" name="product_id" th:value="${product.id}" />
+                                    <button type="submit" class="btn bg-cart">
+                                        <i class="fa fa-cart-plus mr-2"></i> Add to cart
+                                    </button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container mt-4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${pagedProducts.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/api/v1/(page=0)}">First</a>
+                            </li>
+                            <li class="page-item" th:classappend="${pagedProducts.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/api/v1/(page=${pagedProducts.number - 1})}">Previous</a>
+                            </li>
+                            <li th:classappend="${page == pagedProducts.number} ? ' active' : ''"
+                                th:each="page : ${#numbers.sequence(0, pagedProducts.totalPages - 1)}">
+                                <a class="page-link" th:href="@{/api/v1/(page=${page})}" th:text="${page + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${pagedProducts.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/api/v1/(page=${pagedProducts.number + 1})}">Next</a>
+                            </li>
+                            <li class="page-item" th:classappend="${pagedProducts.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/api/v1/(page=${pagedProducts.totalPages - 1})}">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('add-to-cart-form');
+            const button = form.querySelector('button');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const productId = form.querySelector('input[name="product_id"]').value;
+                const url = `/api/v1/cart/add?product_id=${productId}`;
+
+                // Change button text and appearance
+                button.innerHTML = '<i class="fa fa-minus mr-2"></i> Update quantity';
+                button.classList.add('btn-success');
+                button.classList.remove('btn-primary');
+
+                // Redirect to the URL
+                window.location.href = url;
+            });
+        });
+    </script>
+
+    <!--    <script>-->
+<!--        document.addEventListener('DOMContentLoaded', function() {-->
+<!--            document.querySelectorAll('.bg-cart').forEach(button => {-->
+<!--                button.addEventListener('click', function() {-->
+<!--                    const productId = this.getAttribute('data-product-id');-->
+<!--                    const url = `/api/v1/cart/add?product_id=${productId}`;-->
+
+<!--                    fetch(url, {-->
+<!--                        method: 'GET',-->
+<!--                        headers: {-->
+<!--                            'Content-Type': 'application/json',-->
+<!--                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')-->
+<!--                        },-->
+<!--                    })-->
+<!--                        .then(response => {-->
+<!--                            if (response.redirected) {-->
+<!--                                window.location.href = response.url;-->
+<!--                            } else if (response.ok) {-->
+<!--                                this.innerHTML = '<i class="fa fa-minus mr-2"></i> Update quantity';-->
+<!--                                this.classList.add('btn-success');-->
+<!--                                this.classList.remove('btn-primary');-->
+<!--                            }-->
+<!--                        })-->
+<!--                        .catch(error => console.error('Error:', error));-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+
+</section>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

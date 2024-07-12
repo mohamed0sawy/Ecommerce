@@ -99,6 +99,6 @@ public class OrderController {
             orderItems.add(orderItem);
             orderItemRepository.saveAll(orderItems);
         }
-        return "success";
+        return "redirect:/api/v1/orders/details";
     }
 }

@@ -2,13 +2,11 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.model.Category;
 import com.academy.Ecommerce.model.Product;
-import com.academy.Ecommerce.repository.CategoryRepository;
-import com.academy.Ecommerce.repository.ProductRepository;
 import com.academy.Ecommerce.service.CategoryService;
 import com.academy.Ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -35,13 +33,17 @@ public class ProductController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String listProducts(Model model) {
         List<Product> products = productService.getAllProducts();
         model.addAttribute("products", products);
-        return "product/list";
+        return "product/index";
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.findAll());
@@ -49,6 +51,8 @@ public class ProductController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String createProduct(@ModelAttribute @Valid Product product, BindingResult bindingResult, @RequestParam("image") MultipartFile image, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.findAll());
@@ -77,22 +81,29 @@ public class ProductController {
 
         productService.saveProduct(product);
 
-        return "redirect:/products";
+        return "redirect:/api/v1/products";
     }
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Product product = productService.getProductById(id);
-        if(product == null){
-           throw new IllegalArgumentException("Invalid product Id:" + id);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
 
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Optional<Product> productOptional = productService.findProductById(id);
+        if(productOptional.isPresent()){
+            Product product = productOptional.get();
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categories);
+            return "product/edit";
+
+        }else{
+            throw new IllegalArgumentException("Invalid product Id:" + id);
         }
-        List<Category> categories = categoryService.findAll();
-        model.addAttribute("product", product);
-        model.addAttribute("categories", categories);
-        return "product/edit";
+
     }
 
     @PostMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String editProduct(@PathVariable("id") Long id, @ModelAttribute("product") @Valid Product product,BindingResult bindingResult,
                               @RequestParam("image") MultipartFile image, Model model) {
         if (bindingResult.hasErrors()) {
@@ -111,12 +122,29 @@ public class ProductController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "redirect:/products";
+        return "redirect:/api/v1/products";
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+
     public String deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
-        return "redirect:/products";
+        return "redirect:/api/v1/products";
     }
+    @GetMapping("/{id}")
+    public String showProductDetails(@PathVariable Long id, Model model) {
+        Optional<Product> productOptional = productService.findProductById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categoryService.findAll());
+            return "product/show";
+
+        }else{
+            throw new IllegalArgumentException("Invalid product Id:" + id);
+        }
+
+    }
+
 }

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Categories List</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
@@ -15,9 +17,11 @@
 </head>
 </head>
 <body>
+<section layout:fragment="content">
+
 <div class="container">
     <h1>Categories</h1>
-    <a th:href="@{/categories/create}" class="btn btn-primary mb-3">Create New Category</a>
+    <a th:href="@{/api/v1/categories/create}" class="btn btn-primary mb-3">Create New Category</a>
     <table class="table">
         <thead>
         <tr>
@@ -31,13 +35,14 @@
             <td th:text="${category.id}">1</td>
             <td th:text="${category.name}">Category Name</td>
             <td>
-                <a th:href="@{/categories/edit/{id}(id=${category.id})}" class="btn btn-secondary">Edit</a>
-                <a th:href="@{/categories/delete/{id}(id=${category.id})}" class="btn btn-danger">Delete</a>
+                <a th:href="@{/api/v1/categories/edit/{id}(id=${category.id})}" class="btn btn-secondary">Edit</a>
+                <a th:href="@{/api/v1/categories/delete/{id}(id=${category.id})}" class="btn btn-danger">Delete</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</section>
 </body>
 </html>

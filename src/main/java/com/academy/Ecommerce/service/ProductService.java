@@ -1,12 +1,15 @@
 package com.academy.Ecommerce.service;
 
 
+import com.academy.Ecommerce.model.Category;
 import com.academy.Ecommerce.model.Product;
 import com.academy.Ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -18,8 +21,12 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElse(null);
+    public Page<Product> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    public Optional<Product> findProductById(Long id) {
+        return productRepository.findById(id);
     }
 
     public Product saveProduct(Product product) {
@@ -45,11 +52,12 @@ public class ProductService {
         }
     }
 
-    public List<Product> searchProducts(String keyword) {
-        return productRepository.findByNameContaining(keyword);
+    public Page<Product> searchProducts(String keyword, Pageable pageable) {
+        return productRepository.findByNameContaining(keyword,pageable);
     }
 
-    public List<Product> filterProductsByCategory(String category) {
-        return productRepository.findByCategoryName(category);
+
+    public Page<Product> filterProductsByCategory(Category category, Pageable pageable) {
+        return productRepository.findByCategory(category, pageable);
     }
 }

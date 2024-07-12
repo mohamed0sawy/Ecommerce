@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Create Product</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
@@ -14,11 +16,11 @@
     <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
 </head>
 <body>
-<div class="container custom-container">
-    <div class="card">
+<section layout:fragment="content">
+
+<div class="container ">
         <h1 class="card-header text-center">Create Product</h1>
-        <div class="card-body">
-            <form th:action="@{/products/create}" th:object="${product}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/api/v1/products/create}" th:object="${product}" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" id="name" class="form-control" th:field="*{name}" />
@@ -63,11 +65,10 @@
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Create</button>
-                    <a class="btn btn-secondary" th:href="@{/products}">Cancel</a>
+                    <a class="btn btn-secondary" th:href="@{/api/v1/products}">Cancel</a>
                 </div>
             </form>
-        </div>
-    </div>
+
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script>
@@ -82,5 +83,6 @@
         reader.readAsDataURL(input.files[0]);
     }
 </script>
+</section>
 </body>
 </html>

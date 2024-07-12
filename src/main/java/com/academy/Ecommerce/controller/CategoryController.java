@@ -1,29 +1,31 @@
 package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.model.Category;
-import com.academy.Ecommerce.model.Product;
 import com.academy.Ecommerce.service.CategoryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/categories")
+@RequestMapping("/api/v1/categories")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+@RequiredArgsConstructor
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+
+    private final CategoryService categoryService;
 
     @GetMapping
     public String listCategories(Model model) {
         model.addAttribute("categories", categoryService.findAll());
-        return "category/list";
+        return "category/index";
     }
 
     @GetMapping("/create")
@@ -38,7 +40,7 @@ public class CategoryController {
             return "category/create";
         }
         categoryService.save(category);
-        return "redirect:/categories";
+        return "redirect:/api/v1/categories";
     }
 
     @GetMapping("/edit/{id}")
@@ -60,12 +62,12 @@ public class CategoryController {
             return "category/update";
         }
         categoryService.save(category);
-        return "redirect:/categories";
+        return "redirect:/api/v1/categories";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteCategory(@PathVariable("id") long id, Model model) {
         categoryService.deleteById(id);
-        return "redirect:/categories";
+        return "redirect:/api/v1/categories";
     }
 }

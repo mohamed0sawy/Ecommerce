@@ -1,0 +1,13 @@
+<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+    <div class=" p-3 bg-light position-sticky">
+
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" th:href="@{/api/v1/}">All Products</a>
+      </li>
+      <li th:each="category : ${categories}" class="nav-item">
+        <a class="nav-link" th:href="@{/api/v1/filter(category=${category})}" th:text="${category}"></a>
+      </li>
+    </ul>
+  </div>
+</nav>

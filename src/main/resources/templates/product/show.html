@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Product Details</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .product-card {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+            /*margin: 20px;*/
+            padding: 20px;
+            /*border: 1px solid #ddd;*/
+            background-color: #fff;
+            /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+        }
+        .product-img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .left-side, .right-side {
+            flex: 1;
+            padding: 20px;
+        }
+        .right-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .product-name {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .product-description {
+            margin: 20px 0;
+        }
+        .product-price {
+            font-size: 1.5rem;
+            color: #28a745;
+        }
+        .btn-add-to-cart {
+            margin-top: 20px;
+        }
+        .heart {
+            font-size: 24px;
+            color: red;
+        }
+        .content p {
+            margin-bottom: 20px;
+        }
+        .ratings {
+            margin-top: 10px;
+        }
+        .ratings span {
+            margin-left: 10px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .search-option {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .bg-cart {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .search-option .inputs {
+            margin: 0 10px;
+        }
+        .search-option input {
+            padding: 5px;
+        }
+        .share {
+            margin-left: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+<br>
+
+<header layout:fragment="header">
+    <div layout:insert="~{fragments/searchbar}"></div>
+</header>
+<section layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="p-3 bg-light position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/api/v1/}">All Products</a>
+                        </li>
+                        <li th:each="category : ${categories}" class="nav-item">
+                            <a class="nav-link" th:href="@{/api/v1/filter(category=${category.getName()})}" th:text="${category.getName()}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="col-md-9 col-lg-10">
+
+            <div class="product-card">
+            <div class="left-side">
+                <img th:src="@{${product.imageUrl}}" class="img-fluid product-img" alt="Product Image">
+            </div>
+            <div class="right-side">
+                <div class="product-info">
+                    <h3 class="product-name" th:text="${product.name}">Product Name</h3>
+                    <div class="mt-2 content">
+                        <p class="product-description" th:text="${product.description}">Product Description</p>
+                    </div>
+                    <h3 class="product-price" th:text="'$ ' + ${product.price}">Product Price</h3>
+                    <div class="ratings d-flex flex-row align-items-center">
+                        <!--
+                        <div class="d-flex flex-row">
+                            <i class='bx bxs-star' th:each="star : ${#numbers.sequence(1, product.rating)}"></i>
+                            <i class='bx bx-star' th:each="star : ${#numbers.sequence(product.rating + 1, 5)}"></i>
+                        </div>
+                        <span th:text="${product.reviews} + ' reviews'">441 reviews</span>
+                        -->
+                    </div>
+                    <div class="buttons d-flex flex-row mt-5 gap-3">
+                        <button type="button" class="btn bg-cart" th:href="@{/api/v1/cart/add}"><i
+                                class="fa fa-cart-plus mr-2"></i> Add to cart</button>
+                    </div>
+
+                        <i class='bx bx-share-alt share'></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
