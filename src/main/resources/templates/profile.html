@@ -60,7 +60,7 @@
                                             <div class="col-12 col-lg-10">
                                                 <div class="list-group list-group-flush">
                                                     <a th:href="@{/api/v1/orders/history/{userId}(userId=${user.id})}"class="list-group-item list-group-item-action">Orders history</a>
-                                                    <a th:href="@{/api/v1/profile/address}" class="list-group-item list-group-item-action">Addresses</a>
+                                                    <a th:href="@{/api/v1/addresses/user/{userId}(userId=${user.id})}" class="list-group-item list-group-item-action">Addresses</a>
                                                     <a th:href="@{/api/v1/profile/settings}" class="list-group-item list-group-item-action">Settings</a>
                                                     <form th:action="@{/logout}" method="post" class="list-group-item-action list-group-flush">
                                                         <input type="submit" value="logout" class="list-group-item list-group-item-action list-group-flush" style="color:#d80000"/>
