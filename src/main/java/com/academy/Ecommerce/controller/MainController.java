@@ -2,8 +2,11 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.model.Category;
 import com.academy.Ecommerce.model.Product;
+import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.CategoryService;
 import com.academy.Ecommerce.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
@@ -27,13 +30,10 @@ public class MainController {
 
 
     @GetMapping("/")
-    public String viewHomePage(@RequestParam(name = "page", defaultValue = "0") int page,
-                              Model model) {
+    public String viewHomePage(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
         int pageSize = 6;
         Page<Product> pagedProducts = productService.findAll(PageRequest.of(page, pageSize));
         model.addAttribute("categories", categoryService.getAllCategoryNames());
-
-
         model.addAttribute("pagedProducts", pagedProducts);
 
         return "main-page";

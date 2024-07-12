@@ -43,6 +43,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/register").permitAll()
                         .requestMatchers("/api/v1/activate").permitAll()
                         .requestMatchers("/api/v1/del").permitAll()
+                        .requestMatchers("/api/v1/search").permitAll()
+                        .requestMatchers("/api/v1/filter").permitAll()
+                        .requestMatchers("/css/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/js/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(login ->
                         login
@@ -56,6 +61,7 @@ public class SecurityConfig {
                                 .permitAll()
                                 .logoutUrl("/logout")
                                 .logoutSuccessUrl("/api/v1/login"));
+        http.csrf(csrf -> csrf.disable());
         return http.build();
     }
 

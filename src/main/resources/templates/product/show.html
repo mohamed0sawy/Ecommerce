@@ -85,6 +85,11 @@
     </style>
 </head>
 <body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+<br>
+
 <header layout:fragment="header">
     <div layout:insert="~{fragments/searchbar}"></div>
 </header>
