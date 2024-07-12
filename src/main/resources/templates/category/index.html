@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Categories List</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
@@ -15,6 +17,8 @@
 </head>
 </head>
 <body>
+<section layout:fragment="content">
+
 <div class="container">
     <h1>Categories</h1>
     <a th:href="@{/api/v1/categories/create}" class="btn btn-primary mb-3">Create New Category</a>
@@ -39,5 +43,6 @@
     </table>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</section>
 </body>
 </html>

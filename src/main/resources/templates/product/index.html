@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"><head>
   <title>Product List</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <meta charset="utf-8">
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
 </head>
 <body>
+<section layout:fragment="content">
 <div class="container">
   <h1>Product List</h1>
   <a class="btn btn-primary mb-3" th:href="@{/api/v1/products/create}">Add New Product</a>
@@ -44,5 +46,6 @@
   </table>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</section>
 </body>
 </html>

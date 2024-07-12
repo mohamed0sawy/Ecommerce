@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"><head>
+    <head>
     <title>Create Category</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <meta charset="utf-8">
@@ -12,8 +14,10 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
-</head></head>
+</head>
 <body>
+<section layout:fragment="content">
+
 <div class="container">
     <h1>Create Category</h1>
     <form th:action="@{/api/v1/categories/create}" th:object="${category}" method="post">
@@ -27,5 +31,7 @@
     </form>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</section>
 </body>
+
 </html>

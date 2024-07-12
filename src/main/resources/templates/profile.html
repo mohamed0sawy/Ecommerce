@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,12 +27,13 @@
     </style>
 </head>
 <body>
+<section layout:fragment="content">
 
-<section class="vh-100" style="background-color: #aec3d8;">
-    <div class="container py-5 h-100">
+<section class="vh-100" >
+    <div class="container py-5 h-100 w-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-lg-6 mb-4 mb-lg-0" style="width: 100%; height: 100%;">
-                <div class="card mb-3" style="border-radius: .5rem; height:100%;">
+                <div class="card mb-3 w-100" style="border-radius: .5rem; height:100%;">
                     <div class="row g-0" style="height: 100%;">
                         <div class="col-md-4 gradient-custom text-center text-white"
                              style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
@@ -57,8 +59,8 @@
                                         <div class="row gy-5">
                                             <div class="col-12 col-lg-10">
                                                 <div class="list-group list-group-flush">
-                                                    <a th:href="@{'/api/v1/orders/history/' + ${user.id}}" class="list-group-item list-group-item-action">Orders history</a>
-                                                    <a th:href="@{'/api/v1/addresses/user/' + ${user.id}}" class="list-group-item list-group-item-action">Addresses</a>
+                                                    <a th:href="@{/api/v1/orders/history/{userId}(userId=${user.id})}"class="list-group-item list-group-item-action">Orders history</a>
+                                                    <a th:href="@{/api/v1/profile/address}" class="list-group-item list-group-item-action">Addresses</a>
                                                     <a th:href="@{/api/v1/profile/settings}" class="list-group-item list-group-item-action">Settings</a>
                                                     <form th:action="@{/logout}" method="post" class="list-group-item-action list-group-flush">
                                                         <input type="submit" value="logout" class="list-group-item list-group-item-action list-group-flush" style="color:#d80000"/>
@@ -77,6 +79,6 @@
         </div>
     </div>
 </section>
-
+</section>
 </body>
 </html>

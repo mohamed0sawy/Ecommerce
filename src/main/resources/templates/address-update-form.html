@@ -6,6 +6,11 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
+<!-- Navigation-->
+<div th:replace="fragments/topbar :: topbar"></div>
+<br>
+
 <div class="container mt-5">
     <h1 class="mb-4">Update Address</h1>
     <form th:action="@{/api/v1/addresses/update/{id}(id=${address.id})}" th:object="${address}" method="post">
