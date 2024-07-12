@@ -80,7 +80,7 @@ public class UserService implements UserDetailsService {
         user.setLoginTries(user.getLoginTries() + 1);
         userRepository.save(user);
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),
                 user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
 
