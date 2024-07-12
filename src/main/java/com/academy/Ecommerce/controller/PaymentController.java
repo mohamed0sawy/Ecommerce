@@ -63,7 +63,8 @@ public class PaymentController {
         try {
             paymentService.processPayment(validateCVCRequest, processPaymentRequest);
             System.out.println("Done and balance reduced!");
-            return "redirect:/api/v1/orders/cartItems";  // Redirect to cartItems after successful payment
+
+            return "redirect:/api/v1/orders/cartItems?payment=card";  // Redirect to cartItems after successful payment
         } catch (FeignException e) {
             // Handle error and populate model with necessary attributes for the choose-card.html
             List<String> cardNumbers = cardService.getCardNumbersOfUser(user.getId()); // Assuming user ID 1
