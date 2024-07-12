@@ -20,10 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/api/v1/cart")
@@ -82,44 +79,56 @@ public class CartController {
         return "redirect:/api/v1/cart";
     }
 
+
     @PostMapping("/checkout")
     public ResponseEntity<Map<String, Object>> checkout(@RequestBody List<CartItemUpdateDto> cartItemUpdates,
                                                         HttpServletRequest request) {
-        try {
-            List<CartItem> checkedCartItems = processCartItemUpdates(cartItemUpdates);
-            double totalPrice = calculateTotalPrice(checkedCartItems) + 30.0;
-            setupSessionAttributes(request, checkedCartItems, totalPrice);
+        Map<String, Object> response = new HashMap<>();
+        HttpSession session = request.getSession();
 
-            User existingUser = (User) request.getSession().getAttribute("user");
-            String redirectUrl = buildRedirectUrl(existingUser.getId());
-
-            return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
-        } catch (InsufficientStockException e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", e.getMessage());
-            return ResponseEntity.ok(response);
-        }
-    }
-
-    private List<CartItem> processCartItemUpdates(List<CartItemUpdateDto> cartItemUpdates) throws InsufficientStockException {
         List<CartItem> checkedCartItems = new ArrayList<>();
         for (CartItemUpdateDto cartItemUpdate : cartItemUpdates) {
-            CartItem cartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId()).orElseThrow(() ->
-                    new IllegalArgumentException("CartItem not found: " + cartItemUpdate.getCartItemId()));
-            Product product = productService.findProductById(cartItem.getProduct().getId()).orElseThrow(() ->
-                    new IllegalArgumentException("Product not found: " + cartItem.getProduct().getId()));
+            Optional<CartItem> optionalCartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId());
+            if (!optionalCartItem.isPresent()) {
+                System.out.println("cartiem");
+                response.put("success", false);
+                response.put("message", "CartItem not found: " + cartItemUpdate.getCartItemId());
+                return ResponseEntity.badRequest().body(response);
+            }
 
+            CartItem cartItem = optionalCartItem.get();
+            Optional<Product> optionalProduct = productService.findProductById(cartItem.getProduct().getId());
+            if (!optionalProduct.isPresent()) {
+                System.out.println("product");
+                response.put("success", false);
+                response.put("message", "Product not found: " + cartItem.getProduct().getId());
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            Product product = optionalProduct.get();
             if (product.getStock() < cartItemUpdate.getQuantity()) {
-                throw new InsufficientStockException("Insufficient stock for product: " + product.getName() +
-                        ", only " + product.getStock() + " items in the stock at the moment.");
+                return ResponseEntity.badRequest().header("error-message", "Insufficient stock for product: " + product.getName() +
+                        ", only " + product.getStock() + " items in stock at the moment.").build();
             }
 
             cartItem.setQuantity(new Quantity(cartItemUpdate.getQuantity()));
             checkedCartItems.add(cartItem);
             cartItemService.saveCartItem(cartItem);
         }
-        return checkedCartItems;
+
+        double totalPrice = calculateTotalPrice(checkedCartItems) + 30.0;
+        setupSessionAttributes(request, checkedCartItems, totalPrice);
+
+        User existingUser = (User) session.getAttribute("user");
+        String redirectUrl = buildRedirectUrl(existingUser.getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.LOCATION, redirectUrl);
+
+        response.put("success", true);
+        response.put("redirectUrl", redirectUrl);
+
+        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
     }
 
     private double calculateTotalPrice(List<CartItem> checkedCartItems) {
@@ -139,6 +148,64 @@ public class CartController {
     }
 
 
+//    @PostMapping("/checkout")
+//    public ResponseEntity<Map<String, Object>> checkout(@RequestBody List<CartItemUpdateDto> cartItemUpdates,
+//                                                        HttpServletRequest request) {
+//        try {
+//            List<CartItem> checkedCartItems = processCartItemUpdates(cartItemUpdates);
+//            double totalPrice = calculateTotalPrice(checkedCartItems) + 30.0;
+//            setupSessionAttributes(request, checkedCartItems, totalPrice);
+//
+//            User existingUser = (User) request.getSession().getAttribute("user");
+//            String redirectUrl = buildRedirectUrl(existingUser.getId());
+//
+//            return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
+//        } catch (InsufficientStockException e) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("success", false);
+//            response.put("message", e.getMessage());
+//            System.out.println(response);
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
+//
+//    private List<CartItem> processCartItemUpdates(List<CartItemUpdateDto> cartItemUpdates) throws InsufficientStockException {
+//        List<CartItem> checkedCartItems = new ArrayList<>();
+//        for (CartItemUpdateDto cartItemUpdate : cartItemUpdates) {
+//            CartItem cartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId()).orElseThrow(() ->
+//                    new IllegalArgumentException("CartItem not found: " + cartItemUpdate.getCartItemId()));
+//            Product product = productService.findProductById(cartItem.getProduct().getId()).orElseThrow(() ->
+//                    new IllegalArgumentException("Product not found: " + cartItem.getProduct().getId()));
+//
+//            if (product.getStock() < cartItemUpdate.getQuantity()) {
+//                throw new InsufficientStockException("Insufficient stock for product: " + product.getName() +
+//                        ", only " + product.getStock() + " items in the stock at the moment.");
+//            }
+//
+//            cartItem.setQuantity(new Quantity(cartItemUpdate.getQuantity()));
+//            checkedCartItems.add(cartItem);
+//            cartItemService.saveCartItem(cartItem);
+//        }
+//        return checkedCartItems;
+//    }
+//
+//    private double calculateTotalPrice(List<CartItem> checkedCartItems) {
+//        return checkedCartItems.stream()
+//                .mapToDouble(item -> item.getQuantity().value() * item.getProduct().getPrice())
+//                .sum();
+//    }
+//
+//    private void setupSessionAttributes(HttpServletRequest request, List<CartItem> checkedCartItems, double totalPrice) {
+//        HttpSession session = request.getSession();
+//        session.setAttribute("checkedCartItems", checkedCartItems);
+//        session.setAttribute("totalPrice", totalPrice);
+//    }
+//
+//    private String buildRedirectUrl(Long userId) {
+//        return "/api/v1/addresses/list?user_id=" + userId;
+//    }
+
+
 
 //    @PostMapping("/checkout")
 //    public ResponseEntity<Map<String, Object>> checkout(@RequestBody List<CartItemUpdateDto> cartItemUpdates,
@@ -147,12 +214,15 @@ public class CartController {
 //        for (CartItemUpdateDto cartItemUpdate : cartItemUpdates) {
 //            CartItem cartItem = cartItemService.findCartItemByCartItemId(cartItemUpdate.getCartItemId()).get();
 //            Product product = productService.findProductById(cartItem.getProduct().getId()).get();
+//            System.out.println("cartItem = " + cartItem);
+//            System.out.println("product = " + product);
 //
 //            if (product.getStock() < cartItemUpdate.getQuantity()) {
 //                Map<String, Object> response = new HashMap<>();
 //                response.put("success", false);
 //                response.put("message", "Insufficient stock for product: " + product.getName() +
 //                        ", only " + product.getStock() + " items in stock at the moment.");
+//                System.out.println(response);
 //                return ResponseEntity.ok(response);
 //            }
 //        }
@@ -171,7 +241,7 @@ public class CartController {
 //        session.setAttribute("totalPrice", totalPrice + 30.0);
 //        User existingUser = (User) session.getAttribute("user");
 //        Long userId = existingUser.getId();
-//        String redirectUrl = "/api/v1/Address/list?user_id=" + userId;
+//        String redirectUrl = "/api/v1/addresses/list?user_id=" + userId;
 //
 //        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, redirectUrl).build();
 //    }

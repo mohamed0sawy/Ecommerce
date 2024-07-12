@@ -20,7 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 @Controller
@@ -86,12 +89,23 @@ public class RegistrationController {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
-            // check port for final release.
+            Properties properties = new Properties();
+            try {
+                properties.load(getClass().getResourceAsStream("/application.properties"));
+            } catch (IOException e) {
+                System.out.println("Error loading application.properties: " + e.getMessage());
+                return;
+            }
+
+            String serverPort = properties.getProperty("server.port");
+            String baseUrl = "http://localhost:" + serverPort + "/api/v1/activate";
+            String link = String.format(baseUrl + "?token=%s", user.getConfirmationToken());
+
             String htmlMsg = String.format(
                     "<p>Hello %s,</p>" +
                             "<p>To activate your account, please click the link below:</p>" +
-                            "<p><a href='http://localhost:8080/api/v1/activate?token=%s'>Activate Account</a></p>",
-                    user.getUsername(), user.getConfirmationToken());
+                            "<p><a href='%s'>Activate Account</a></p>",
+                    user.getUsername(), link);
 
             helper.setText(htmlMsg, true);
             helper.setTo(user.getEmail());

@@ -16,6 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.UUID;
 
 @Controller
@@ -70,10 +73,22 @@ public class LoginController {
     }
 
     private String buildPasswordResetEmailContent(User user) {
+        Properties properties = new Properties();
+        try {
+            properties.load(getClass().getResourceAsStream("/application.properties"));
+        } catch (IOException e) {
+            System.out.println("Error loading application.properties: " + e.getMessage());
+            return null;
+        }
+
+        String serverPort = properties.getProperty("server.port");
+        String baseUrl = "http://localhost:" + serverPort + "/api/v1/reset";
+        String link = String.format(baseUrl + "?token=%s", user.getConfirmationToken());
+
         return String.format("<p>Hello %s,</p>" +
                         "<p>To reset your password, please click the link below:</p>" +
-                        "<p><a href='http://localhost:8080/api/v1/reset?token=%s'>Reset Password</a></p>",
-                user.getUsername(), user.getConfirmationToken());
+                        "<p><a href='%s'>Reset Password</a></p>",
+                user.getUsername(), link);
     }
 
     @GetMapping("/reset")
