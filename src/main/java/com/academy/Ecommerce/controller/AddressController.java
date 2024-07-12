@@ -96,4 +96,18 @@ public class AddressController {
         addressService.deleteAddressById(id);
         return "redirect:/api/v1/addresses/user/" + address.getUser().getId();
     }
+
+    @GetMapping("/list")
+    public String listUserAddress(@RequestParam("user_id") Long userId, Model model){
+        List<Address> addressList = addressService.getAddressesByUserId(userId);
+        model.addAttribute("addressList", addressList);
+        return "address-checkList";
+    }
+
+    @PostMapping("/select")
+    public String selectAddress(@RequestParam("addressId") Long addressId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.setAttribute("selectedAddressId", addressId);
+        return "redirect:/api/v1/payment";
+    }
 }
