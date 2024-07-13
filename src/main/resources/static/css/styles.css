@@ -77,6 +77,19 @@
 /*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
 /*    transition: box-shadow 0.3s ease;*/
 /*}*/
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.content {
+    flex: 1;
+}
+footer {
+    background-color: rgba(0, 0, 0, 0.05);
+}
 
 .product-card:hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);

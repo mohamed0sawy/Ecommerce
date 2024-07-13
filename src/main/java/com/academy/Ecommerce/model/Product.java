@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
@@ -36,6 +40,16 @@ public class Product {
     private int stock;
 
     private String imageUrl;
+    @OneToMany(mappedBy = "product")
+    private List<Rating> ratings;
+    public double getAverageRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
+        double average = ratings.stream().mapToDouble(Rating::getRating).average().orElse(0.0);
+        BigDecimal roundedAverage = BigDecimal.valueOf(average).setScale(1, RoundingMode.HALF_UP);
+        return roundedAverage.doubleValue();
+    }
 
 
 

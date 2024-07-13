@@ -2,11 +2,17 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.model.Category;
 import com.academy.Ecommerce.model.Product;
+import com.academy.Ecommerce.model.Rating;
+import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.CategoryService;
 import com.academy.Ecommerce.service.ProductService;
+import com.academy.Ecommerce.service.RatingService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +35,8 @@ public class ProductController {
     private final ProductService productService;
 
     private final CategoryService categoryService;
+
+    private final RatingService ratingService;
     private static String UPLOADED_FOLDER = "src/main/resources/static/images/";
 
 
@@ -124,6 +132,28 @@ public class ProductController {
         }
         return "redirect:/api/v1/products";
     }
+    @PostMapping("/{id}/rate")
+    public String rateProduct(@PathVariable Long id, @RequestParam Double rating, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User existingUser = (User) session.getAttribute("user");
+        Long orderId= (Long) session.getAttribute("orderId");
+        if (existingUser == null) {
+            return "redirect:/api/v1/login";
+        }
+      Optional<Product> productOptional =productService.findProductById(id);
+        if (productOptional.isPresent() ) {
+        Product product= productOptional.get();
+            ratingService.rateProduct(product,rating,existingUser);
+        }
+        if(orderId!=null){
+            return "redirect:/api/v1/orders/details/" + orderId;
+
+        }
+        else{
+            return "redirect:/api/v1/products/"+id;
+        }
+    }
+
 
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
@@ -139,6 +169,7 @@ public class ProductController {
             Product product = productOptional.get();
             model.addAttribute("product", product);
             model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("averageRating", productService.calculateAverageRating(product));
             return "product/show";
 
         }else{

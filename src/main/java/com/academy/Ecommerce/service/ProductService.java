@@ -3,7 +3,10 @@ package com.academy.Ecommerce.service;
 
 import com.academy.Ecommerce.model.Category;
 import com.academy.Ecommerce.model.Product;
+import com.academy.Ecommerce.model.Rating;
 import com.academy.Ecommerce.repository.ProductRepository;
+import com.academy.Ecommerce.repository.RatingRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -12,10 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final RatingRepository ratingRepository;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -60,4 +64,10 @@ public class ProductService {
     public Page<Product> filterProductsByCategory(Category category, Pageable pageable) {
         return productRepository.findByCategory(category, pageable);
     }
+    public double calculateAverageRating(Product product) {
+        List<Rating> ratings = ratingRepository.findByProduct(product);
+        return ratings.stream().mapToDouble(Rating::getRating).average().orElse(0.0);
+    }
+
+
 }
