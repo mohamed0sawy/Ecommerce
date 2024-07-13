@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <script th:src="@{/js/content-script.js}"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -30,6 +30,7 @@
 
 
                 <td>
+                    <div sec:authorize="hasRole('ROLE_SUPER_ADMIN')">
                     <div th:if="${not #lists.contains(admin.roles,superAdminRole)}">
                     <button class="btn" onclick="toggleAdminStatus(this)"
                             th:data-admin-id="${admin.id}" th:data-admin-enabled="${admin.enabled}"
@@ -41,6 +42,7 @@
                     <!-- Example Thymeleaf code in your template -->
                         <a class="btn btn-danger" th:href="@{/api/v1/admins/delete/{id}(id=${admin.id})}">Delete</a>
 
+                    </div>
                     </div>
                 </td>
             </tr>
