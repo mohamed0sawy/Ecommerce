@@ -141,38 +141,10 @@
     <script th:if="${successMessage}" th:inline="javascript">
         setTimeout(function() {
             document.getElementById('successMessage').style.display = 'none';
-        }, 1500); // Adjust the time (in milliseconds) after which the message should disappear
+        }, 1500);
     </script>
 
 
-    <!--    <script>-->
-<!--        document.addEventListener('DOMContentLoaded', function() {-->
-<!--            document.querySelectorAll('.bg-cart').forEach(button => {-->
-<!--                button.addEventListener('click', function() {-->
-<!--                    const productId = this.getAttribute('data-product-id');-->
-<!--                    const url = `/api/v1/cart/add?product_id=${productId}`;-->
-
-<!--                    fetch(url, {-->
-<!--                        method: 'GET',-->
-<!--                        headers: {-->
-<!--                            'Content-Type': 'application/json',-->
-<!--                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')-->
-<!--                        },-->
-<!--                    })-->
-<!--                        .then(response => {-->
-<!--                            if (response.redirected) {-->
-<!--                                window.location.href = response.url;-->
-<!--                            } else if (response.ok) {-->
-<!--                                this.innerHTML = '<i class="fa fa-minus mr-2"></i> Update quantity';-->
-<!--                                this.classList.add('btn-success');-->
-<!--                                this.classList.remove('btn-primary');-->
-<!--                            }-->
-<!--                        })-->
-<!--                        .catch(error => console.error('Error:', error));-->
-<!--                });-->
-<!--            });-->
-<!--        });-->
-<!--    </script>-->
 
 </section>
 
