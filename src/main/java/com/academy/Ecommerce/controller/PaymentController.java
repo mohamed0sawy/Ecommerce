@@ -74,7 +74,7 @@ public class PaymentController {
 
             if (e.getMessage().contains("Insufficient funds!")) {
                 model.addAttribute("errorMessage", "Insufficient funds!");
-            } else if (e.getMessage().contains("CVC card is wrong!")) {
+            } else if (e.getMessage().contains("CVC is incorrect")) {
                 model.addAttribute("errorMessage", "CVC card is wrong!");
             }
             System.out.println(e.getMessage());
@@ -88,6 +88,8 @@ public class PaymentController {
             return "choose-card"; // Return the same view with error messages
         }
     }
+
+
 
 
 

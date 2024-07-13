@@ -35,6 +35,7 @@ public class CardController {
     public String addCard(@ModelAttribute("validationRequest") ValidationRequest validationRequest, BindingResult result, Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+
         if (result.hasErrors()) {
             return "add-card";
         }
@@ -47,19 +48,21 @@ public class CardController {
             System.out.println("Card added to user successfully");
             return "redirect:/api/v1/payment/chooseCardForm";
         } catch (FeignException e) {
-            if(e.status() == 404) {
+            if (e.status() == 404) {
                 model.addAttribute("errorMessage", "Card number is not valid!");
                 System.out.println("Card number is not valid!");
-            }
-            else if(e.status() == 400) {
+            } else if (e.status() == 400) {
                 model.addAttribute("errorMessage", "Card Information is wrong!");
                 System.out.println("Card Information is wrong!");
             }
-
+            return "add-card";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
+            System.err.println("Error while processing card: " + e.getMessage());
+            e.printStackTrace();
             return "add-card";
         }
     }
-
 
 
 }

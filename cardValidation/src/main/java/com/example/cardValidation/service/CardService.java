@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class CardService {
@@ -29,45 +28,43 @@ public class CardService {
             throw new RuntimeException("Error encrypting card details", e);
         }
     }
+
     public void deleteAll() {
-        cardRepository.deleteAll();;
+        cardRepository.deleteAll();
     }
 
-    public Card getCardByNumber(String cardNumber) {
+    public Card getCardByNumber(String cardNumberEncrypted) {
+        List<Card> cards = cardRepository.findAll(); // Fetch all cards since we can't directly find by encrypted value
+
+        Card card = cards.stream()
+                .filter(c -> c.getCardNumberEncrypted().equals(cardNumberEncrypted))
+                .findFirst()
+                .orElseThrow(() -> ApiError.notFound("Card not found with this card number"));
+
+        // Decrypt the card details
         try {
-            List<Card> cards = cardRepository.findAll(); // Fetch all cards since we can't directly find by encrypted value
-
-            Card card = cards.stream()
-                    .filter(c -> {
-                        try {
-                            return EncryptionUtils.decrypt(c.getCardNumberEncrypted()).equals(cardNumber);
-                        } catch (Exception e) {
-                            throw ApiError.notFound("Error while decrypting");
-                        }
-                    })
-                    .findFirst()
-                    .orElseThrow(() -> ApiError.notFound("Card not found with this card number"));
-
             card.setCardNumber(EncryptionUtils.decrypt(card.getCardNumberEncrypted()));
             card.setPin(Long.valueOf(EncryptionUtils.decrypt(card.getPinEncrypted())));
             card.setCvc(Long.valueOf(EncryptionUtils.decrypt(card.getCvcEncrypted())));
-
-            return card;
         } catch (Exception e) {
-            throw ApiError.notFound("Card not found with this card number");
+            throw new RuntimeException("Error decrypting card details", e);
         }
+
+        return card;
     }
 
-    public void validateCard(String cardNumber, Long pin, Long cvc, Long expMonth, Long expYear) {
-        Card card = getCardByNumber(cardNumber);
+    public void validateCard(String cardNumberEncrypted, String pinEncrypted, String cvcEncrypted, Long expMonth, Long expYear) {
+        Card card = getCardByNumber(cardNumberEncrypted);
 
         if (!card.getStatus().equals(CardStatus.ACTIVE)) {
             throw ApiError.badRequest("Card status is " + card.getStatus());
         }
-        if (!card.getPin().equals(pin)) {
+        if (!card.getPinEncrypted().equals(pinEncrypted)) {
+            System.out.println(card.getPinEncrypted());
+            System.out.println(pinEncrypted);
             throw ApiError.badRequest("Pin is incorrect!");
         }
-        if (!card.getCvc().equals(cvc)) {
+        if (!card.getCvcEncrypted().equals(cvcEncrypted)) {
             throw ApiError.badRequest("Cvc is incorrect!");
         }
         if (!card.getExpMonth().equals(expMonth)) {
@@ -78,12 +75,11 @@ public class CardService {
         }
     }
 
-    public void validateCVC(String cardNumber, Long cvc) {
-        Card card = getCardByNumber(cardNumber);
+    public void validateCVC(String cardNumberEncrypted, String cvcEncrypted) {
+        Card card = getCardByNumber(cardNumberEncrypted);
 
-        if (!card.getCvc().equals(cvc)) {
-            throw ApiError.badRequest("CVC card is wrong!");
+        if (!card.getCvcEncrypted().equals(cvcEncrypted)) {
+            throw ApiError.badRequest("CVC is incorrect!");
         }
     }
-
 }

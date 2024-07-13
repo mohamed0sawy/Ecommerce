@@ -1,4 +1,5 @@
-package com.example.cardValidation.utility;
+package com.academy.Ecommerce.utility;
+
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -38,5 +39,6 @@ public class EncryptionUtils {
         byte[] decryptedValue = cipher.doFinal(Base64.getDecoder().decode(encryptedValue));
         return new String(decryptedValue);
     }
+
 }
 

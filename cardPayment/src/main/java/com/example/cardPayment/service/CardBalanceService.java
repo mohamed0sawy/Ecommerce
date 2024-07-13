@@ -34,33 +34,18 @@ public class CardBalanceService {
         cardBalanceRepository.deleteAll();
     }
 
-    private CardBalance getCardBalanceByCardNumber(String cardNumber) {
-        try {
-            List<CardBalance> cardBalances = cardBalanceRepository.findAll(); // Fetch all since we can't directly find by encrypted value
+    private CardBalance getCardBalanceByEncryptedCardNumber(String cardNumberEncrypted) {
+        List<CardBalance> cardBalances = cardBalanceRepository.findAll(); // Fetch all since we can't directly find by encrypted value
 
-            CardBalance cardBalance = cardBalances.stream()
-                    .filter(c -> {
-                        try {
-                            return EncryptionUtils.decrypt(c.getCardNumberEncrypted()).equals(cardNumber);
-                        } catch (Exception e) {
-                            logger.error("Error decrypting card number for card: " + c.getCardNumberEncrypted(), e);
-                            return false; // Filter out this card if decryption fails
-                        }
-                    })
-                    .findFirst()
-                    .orElseThrow(() -> ApiError.notFound("Card not found with this card number"));
-
-            cardBalance.setCardNumber(EncryptionUtils.decrypt(cardBalance.getCardNumberEncrypted()));
-
-            return cardBalance;
-        } catch (Exception e) {
-            throw ApiError.notFound("Card not found with this card number");
-        }
+        return cardBalances.stream()
+                .filter(c -> c.getCardNumberEncrypted().equals(cardNumberEncrypted))
+                .findFirst()
+                .orElseThrow(() -> ApiError.notFound("Card not found with this card number"));
     }
 
     @Transactional
-    public void processPayment(String cardNumber, Long amount) {
-        CardBalance cardBalance = getCardBalanceByCardNumber(cardNumber);
+    public void processPayment(String cardNumberEncrypted, Long amount) {
+        CardBalance cardBalance = getCardBalanceByEncryptedCardNumber(cardNumberEncrypted);
         Long balance = cardBalance.getBalance();
         if (balance < amount) {
             throw ApiError.badRequest("Insufficient funds!");
@@ -70,4 +55,3 @@ public class CardBalanceService {
         cardBalanceRepository.save(cardBalance);
     }
 }
-

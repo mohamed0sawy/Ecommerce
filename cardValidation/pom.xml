@@ -67,11 +67,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.my_utilities</groupId>
-			<artifactId>MyCustomException</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 
 
 		<!--		<dependency>-->

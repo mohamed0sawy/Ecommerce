@@ -1,52 +1,42 @@
 package com.example.cardPayment.utility;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EncryptionUtils {
 
-    private static final Logger logger = Logger.getLogger(EncryptionUtils.class.getName());
     private static final String ALGORITHM = "AES";
-    private static final SecretKey SECRET_KEY;
+    private static final String KEY = "xk6LprFMQfV0yjFQ4i3sottMh2XuSNot0qFsLaXzjh0="; // Ensure this is secure and managed appropriately
 
-    static {
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance(ALGORITHM);
-            keyGen.init(128);
-            SECRET_KEY = keyGen.generateKey();
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error initializing the encryption key", e);
-            throw new RuntimeException("Error initializing the encryption key", e);
-        }
-    }
+    // Example IV, should be securely generated and shared between encryption and decryption
+    private static final String IV = "1234567890123456";
 
     public static String encrypt(String value) throws Exception {
-        try {
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.ENCRYPT_MODE, SECRET_KEY);
-            byte[] encrypted = cipher.doFinal(value.getBytes());
-            return Base64.getEncoder().encodeToString(encrypted);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error encrypting value: " + value, e);
-            throw new RuntimeException("Error encrypting value", e);
-        }
+        // Ensure the key is decoded correctly from Base64
+        byte[] decodedKey = Base64.getDecoder().decode(KEY);
+        SecretKeySpec keySpec = new SecretKeySpec(decodedKey, ALGORITHM);
+
+        // Example IV initialization, you should replace with a secure random initialization
+        IvParameterSpec ivSpec = new IvParameterSpec(IV.getBytes());
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+        byte[] encryptedValue = cipher.doFinal(value.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedValue);
     }
 
     public static String decrypt(String encryptedValue) throws Exception {
-        try {
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.DECRYPT_MODE, SECRET_KEY);
-            byte[] decodedValue = Base64.getDecoder().decode(encryptedValue);
-            byte[] decryptedValue = cipher.doFinal(decodedValue);
-            return new String(decryptedValue);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error decrypting value: " + encryptedValue, e);
-            throw new RuntimeException("Error decrypting value", e);
-        }
+        byte[] decodedKey = Base64.getDecoder().decode(KEY);
+        SecretKeySpec keySpec = new SecretKeySpec(decodedKey, ALGORITHM);
+
+        IvParameterSpec ivSpec = new IvParameterSpec(IV.getBytes());
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+        byte[] decryptedValue = cipher.doFinal(Base64.getDecoder().decode(encryptedValue));
+        return new String(decryptedValue);
     }
 }
+

@@ -1,11 +1,11 @@
-package com.example.cardValidation.dto;
+package com.academy.Ecommerce.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ValidateCVCRequest {
+public class ProcessPaymentRequestEnc {
     private String cardNumberEncrypted;
-    private String cvcEncrypted;
+    private Long amount;
 }

@@ -18,7 +18,7 @@ public class CardBalanceController {
 
     @PostMapping("/processPayment")
     public ResponseEntity<Void> processPayment(@RequestBody ProcessPaymentRequest processPaymentRequest) {
-        cardBalanceService.processPayment(processPaymentRequest.getCardNumber(), processPaymentRequest.getAmount());
+        cardBalanceService.processPayment(processPaymentRequest.getCardNumberEncrypted(), processPaymentRequest.getAmount());
         return ResponseEntity.ok().build();
     }
 }

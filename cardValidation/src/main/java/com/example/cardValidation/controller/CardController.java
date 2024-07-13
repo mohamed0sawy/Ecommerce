@@ -19,9 +19,9 @@ public class CardController {
 
     @PostMapping("/validateCard")
     public ResponseEntity<Void> validateCard(@RequestBody ValidationRequest validationRequest) {
-        cardService.validateCard(validationRequest.getNumber(),
-                validationRequest.getPin(),
-                validationRequest.getCvc(),
+        cardService.validateCard(validationRequest.getCardNumberEncrypted(),
+                validationRequest.getPinEncrypted(),
+                validationRequest.getCvcEncrypted(),
                 validationRequest.getExpMonth(),
                 validationRequest.getExpYear());
         return ResponseEntity.ok().build();
@@ -29,7 +29,7 @@ public class CardController {
 
     @PostMapping("/validateCVC")
     public ResponseEntity<Void> validateCVC(@RequestBody ValidateCVCRequest validateCVCDto) {
-        cardService.validateCVC(validateCVCDto.getCardNumber(), validateCVCDto.getCVC());
+        cardService.validateCVC(validateCVCDto.getCardNumberEncrypted(), validateCVCDto.getCvcEncrypted());
         return ResponseEntity.ok().build();
     }
 }

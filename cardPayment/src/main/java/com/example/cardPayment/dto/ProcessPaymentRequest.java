@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ProcessPaymentRequest {
-    private String cardNumber;
+    private String cardNumberEncrypted;
     private Long amount;
 }

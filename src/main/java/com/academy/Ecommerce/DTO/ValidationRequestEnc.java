@@ -1,9 +1,11 @@
-package com.example.cardValidation.dto;
+package com.academy.Ecommerce.DTO;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class ValidationRequest {
+@AllArgsConstructor
+public class ValidationRequestEnc {
     private String cardNumberEncrypted;
 
     private String pinEncrypted;
