@@ -30,7 +30,7 @@
             <td th:text="${order.totalPrice != null ? order.totalPrice : '0.00'}"></td>
             <td th:text="${order.paymentMethod}"></td>
             <td>
-                <span th:text="${selectedAddress.street + ', ' + selectedAddress.city}"></span>
+                <span th:text="${order.address.street + ', ' + order.address.city}"></span>
             </td>
             <td><a th:href="@{/api/v1/orders/details/{orderId}(orderId=${order.id})}" class="btn btn-primary">Details</a></td>
         </tr>
