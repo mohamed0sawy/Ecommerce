@@ -16,6 +16,8 @@
       <h5 class="card-title">Order ID: <span th:text="${order.id}"></span></h5>
       <p class="card-text">Order Date: <span th:text="${order.orderDate}"></span></p>
       <p class="card-text">Total Price: <span th:text="${order.totalPrice != null ? order.totalPrice : '0.00'}"></span></p>
+      <p class="card-text">Delivery Address: <span th:text="${selectedAddress.street + ', ' + selectedAddress.city}"></span></p>
+
       <h5>Order Items:</h5>
       <table class="table">
         <thead>
@@ -23,7 +25,6 @@
           <th>Product Name</th>
           <th>Quantity</th>
           <th>Total Price</th>
-          <th>Delivery Address</th>
         </tr>
         </thead>
         <tbody>
@@ -31,9 +32,6 @@
           <td th:text="${item.product.name}"></td>
           <td th:text="${item.quantity}"></td>
           <td th:text="${item.quantity * item.product.price}"></td>
-          <td>
-            <span th:text="${selectedAddress.street + ', ' + selectedAddress.city}"></span>
-          </td>
         </tr>
         </tbody>
       </table>
