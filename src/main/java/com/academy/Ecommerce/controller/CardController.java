@@ -52,7 +52,11 @@ public class CardController {
                 model.addAttribute("errorMessage", "Card number is not valid!");
                 System.out.println("Card number is not valid!");
             } else if (e.status() == 400) {
-                model.addAttribute("errorMessage", "Card Information is wrong!");
+                if(e.getMessage().contains("status")) {
+                    model.addAttribute("errorMessage", "Card Status is not ACTIVE!");
+                } else {
+                    model.addAttribute("errorMessage", "Card Information is wrong!");
+                }
                 System.out.println("Card Information is wrong!");
             }
             return "add-card";
