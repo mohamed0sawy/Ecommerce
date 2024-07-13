@@ -2,6 +2,7 @@ package com.academy.Ecommerce.controller;
 
 import com.academy.Ecommerce.exception.NotFoundException;
 import com.academy.Ecommerce.model.Address;
+import com.academy.Ecommerce.model.User;
 import com.academy.Ecommerce.service.AddressService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -37,7 +38,8 @@ public class AddressController {
     public String createAddress(@Valid @ModelAttribute Address address, BindingResult result,
                                 HttpServletRequest request){
         HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
+        User user = (User) session.getAttribute("user");
+        Long userId = user.getId();
         if (userId == null) {
             throw new NotFoundException("User ID not found in session");
         }
@@ -63,7 +65,8 @@ public class AddressController {
     @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable Long id, Model model, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
+        User user = (User) session.getAttribute("user");
+        Long userId = user.getId();
         if (userId == null) {
             throw new NotFoundException("User ID not found in session");
         }
@@ -82,7 +85,8 @@ public class AddressController {
             return "address-update-form";
         }
         HttpSession session = request.getSession();
-        Long userId = (Long) session.getAttribute("userId");
+        User user = (User) session.getAttribute("user");
+        Long userId = user.getId();
         if (userId == null) {
             throw new NotFoundException("User ID not found in session");
         }
