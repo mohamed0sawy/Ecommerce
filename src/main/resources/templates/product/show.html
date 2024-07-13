@@ -121,18 +121,21 @@
                         <p class="product-description" th:text="${product.description}">Product Description</p>
                     </div>
                     <h3 class="product-price" th:text="'$ ' + ${product.price}">Product Price</h3>
-                    <div class="ratings d-flex flex-row align-items-center">
-                        <!--
-                        <div class="d-flex flex-row">
-                            <i class='bx bxs-star' th:each="star : ${#numbers.sequence(1, product.rating)}"></i>
-                            <i class='bx bx-star' th:each="star : ${#numbers.sequence(product.rating + 1, 5)}"></i>
-                        </div>
-                        <span th:text="${product.reviews} + ' reviews'">441 reviews</span>
-                        -->
+                    <div th:if="${product.stock <= 0}">
+                        <p class="text-danger mb-2">Sold Out</p>
+                        <!-- Disable the Add to Cart button -->
+                        <button type="button" class="btn bg-cart" disabled>
+                            <i class="fa fa-cart-plus mr-2"></i> Add to cart
+                        </button>
                     </div>
-                    <div class="buttons d-flex flex-row mt-5 gap-3">
-                        <button type="button" class="btn bg-cart" th:href="@{/api/v1/cart/add}"><i
-                                class="fa fa-cart-plus mr-2"></i> Add to cart</button>
+                    <!-- If product is available -->
+                    <div th:if="${product.stock > 0}">
+                        <form id="add-to-cart-form" th:action="@{/api/v1/cart/add}" method="get">
+                            <input type="hidden" name="product_id" th:value="${product.id}" />
+                            <button type="submit" class="btn bg-cart">
+                                <i class="fa fa-cart-plus mr-2"></i> Add to cart
+                            </button>
+                        </form>
                     </div>
 
                         <i class='bx bx-share-alt share'></i>
