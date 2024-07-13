@@ -5,13 +5,10 @@ import com.academy.Ecommerce.model.*;
 import com.academy.Ecommerce.repository.OrderItemRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.academy.Ecommerce.repository.OrderRepository;
 import com.academy.Ecommerce.repository.UserRepository;
-import org.springframework.security.config.annotation.web.OAuth2ResourceServerDsl;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,7 +29,8 @@ public class OrderService {
 
 
     public List<Order> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
+        //List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAllByOrderByOrderDateDesc();
         for (Order order : orders) {
             double totalPrice = calculateTotalPrice(order.getItems());
             order.setTotalPrice(totalPrice);
@@ -43,7 +41,8 @@ public class OrderService {
     public List<Order> getOrderHistoryByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
-        List<Order> orderHistory = user.getOrders();
+        //List<Order> orderHistory = user.getOrders();
+        List<Order> orderHistory = orderRepository.findOrderHistoryByUserIdOrderByOrderDateDesc(userId);
         for (Order order : orderHistory) {
             double totalPrice = calculateTotalPrice(order.getItems());
             order.setTotalPrice(totalPrice);

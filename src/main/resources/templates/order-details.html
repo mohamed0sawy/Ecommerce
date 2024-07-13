@@ -16,8 +16,7 @@
       <h5 class="card-title">Order ID: <span th:text="${order.id}"></span></h5>
       <p class="card-text">Order Date: <span th:text="${order.orderDate}"></span></p>
       <p class="card-text">Total Price: <span th:text="${order.totalPrice != null ? order.totalPrice : '0.00'}"></span></p>
-      <p class="card-text">Delivery Address: <span th:text="${selectedAddress.street + ', ' + selectedAddress.city}"></span></p>
-
+      <p class="card-text">Delivery Address: <span th:text="${order.Address.street + ', ' + order.Address.city}"></span></p>
       <h5>Order Items:</h5>
       <table class="table">
         <thead>
