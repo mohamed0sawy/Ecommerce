@@ -21,11 +21,11 @@ public class DataInitializer implements CommandLineRunner {
 
         logger.info("Creating and saving cards...");
 
-        saveCard("1234567890123456", 1234L, 123L, 12L, 25L, CardStatus.ACTIVE);
-        saveCard("6543210987654321", 4321L, 321L, 11L, 24L, CardStatus.BLOCKED);
-        saveCard("1564148912347896", 6543L, 789L, 12L, 26L, CardStatus.ACTIVE);
-        saveCard("4567894523453298", 7845L, 654L, 1L, 27L, CardStatus.ACTIVE);
-        saveCard("9875125635412589", 7893L, 459L, 6L, 29L, CardStatus.ACTIVE);
+        saveCard("1234123412341234", 1234L, 123L, 12L, 25L, CardStatus.ACTIVE);
+        saveCard("5678567856785678", 5678L, 567L, 12L, 25L, CardStatus.BLOCKED);
+        saveCard("2345234523452345", 2345L, 234L, 12L, 25L, CardStatus.ACTIVE);
+        saveCard("3456345634563456", 3456L, 345L, 12L, 25L, CardStatus.ACTIVE);
+        saveCard("4567456745674567", 4567L, 456L, 12L, 25L, CardStatus.ACTIVE);
 
         logger.info("Finished creating and saving new cards.");
     }

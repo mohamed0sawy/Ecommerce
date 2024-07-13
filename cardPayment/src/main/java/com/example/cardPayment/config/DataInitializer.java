@@ -23,23 +23,23 @@ public class DataInitializer implements CommandLineRunner {
         logger.info("Creating and saving balance cards...");
 
         CardBalance balance1 = new CardBalance();
-        balance1.setCardNumber("1234567890123456");
+        balance1.setCardNumber("1234123412341234");
         balance1.setBalance(1000L);
 
         CardBalance balance2 = new CardBalance();
-        balance2.setCardNumber("6543210987654321");
+        balance2.setCardNumber("5678567856785678");
         balance2.setBalance(500L);
 
         CardBalance balance3 = new CardBalance();
-        balance3.setCardNumber("1564148912347896");
+        balance3.setCardNumber("2345234523452345");
         balance3.setBalance(30L);
 
         CardBalance balance4 = new CardBalance();
-        balance4.setCardNumber("4567894523453298");
+        balance4.setCardNumber("3456345634563456");
         balance4.setBalance(50L);
 
         CardBalance balance5 = new CardBalance();
-        balance5.setCardNumber("9875125635412589");
+        balance5.setCardNumber("4567456745674567");
         balance5.setBalance(5000L);
 
         cardBalanceService.saveCardBalance(balance1);
