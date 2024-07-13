@@ -3,6 +3,7 @@ package com.academy.Ecommerce.controller;
 import com.academy.Ecommerce.model.*;
 import com.academy.Ecommerce.repository.OrderItemRepository;
 import com.academy.Ecommerce.repository.OrderRepository;
+import com.academy.Ecommerce.repository.ProductRepository;
 import com.academy.Ecommerce.service.AddressService;
 import com.academy.Ecommerce.service.CartItemService;
 import com.academy.Ecommerce.service.CartService;
@@ -44,6 +45,9 @@ public class OrderController {
     @Autowired
     private CartItemService cartItemService;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @GetMapping
     public String getAllOrders(Model model, HttpServletRequest request) {
         List<Order> allOrders = orderService.getAllOrders();
@@ -70,8 +74,12 @@ public class OrderController {
     @GetMapping("/details/{orderId}")
     public String getOrderDetails(@PathVariable Long orderId, HttpServletRequest request, Model model) {
         Order order = orderService.getOrderById(orderId);
+        HttpSession session = request.getSession();
+        Long selectedAddressId = (Long) session.getAttribute("selectedAddressId");
+        Address selectedAddress = addressService.getAddressById(selectedAddressId);
 
         model.addAttribute("order", order);
+        model.addAttribute("selectedAddress", selectedAddress);
         return "order-details";
     }
 
@@ -98,13 +106,20 @@ public class OrderController {
 
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cartItemList) {
+            Product product = cartItem.getProduct();
+            int orderedQuantity = cartItem.getQuantity().getValue();
+            int newStock = product.getStock() - orderedQuantity;
+            product.setStock(newStock);
+            productRepository.save(product);
+
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
-            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity().getValue());
+            orderItem.setProduct(product);
+            orderItem.setQuantity(orderedQuantity);
             orderItems.add(orderItem);
-            orderItemRepository.saveAll(orderItems);
         }
+        orderItemRepository.saveAll(orderItems);
+
         Cart cart = cartService.findCartByUserId(userId);
         Long cartId = cart.getId();
         cartItemService.deleteCartItemsByCartId(cartId);

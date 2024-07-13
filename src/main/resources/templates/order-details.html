@@ -23,6 +23,7 @@
           <th>Product Name</th>
           <th>Quantity</th>
           <th>Total Price</th>
+          <th>Delivery Address</th>
         </tr>
         </thead>
         <tbody>
@@ -30,6 +31,9 @@
           <td th:text="${item.product.name}"></td>
           <td th:text="${item.quantity}"></td>
           <td th:text="${item.quantity * item.product.price}"></td>
+          <td>
+            <span th:text="${selectedAddress.street + ', ' + selectedAddress.city}"></span>
+          </td>
         </tr>
         </tbody>
       </table>

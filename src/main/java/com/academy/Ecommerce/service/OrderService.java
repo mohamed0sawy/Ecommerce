@@ -66,6 +66,7 @@ public class OrderService {
         double totalPrice = 0.0;
         for (OrderItem item : items) {
             totalPrice += item.getQuantity() * item.getProduct().getPrice();
+            totalPrice += 30;
         }
         return totalPrice;
     }
