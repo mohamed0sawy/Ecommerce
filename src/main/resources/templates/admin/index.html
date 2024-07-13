@@ -20,6 +20,7 @@
             <tr>
                 <th>ID</th>
                 <th>Username</th>
+                <th>Role</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -27,6 +28,7 @@
             <tr th:each="admin : ${admins}">
                 <td th:text="${admin.id}">ID Placeholder</td>
                 <td th:text="${admin.username}">Username Placeholder</td>
+                <td th:text="${#strings.replace(#strings.replace(admin.roles.get(0).getName(), 'ROLE_', ''), '_', ' ')}">Admin Role</td>
 
 
                 <td>

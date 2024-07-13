@@ -76,7 +76,7 @@ public class AdminController {
 
         userService.saveUser(user);
 
-        emailService.sendEmail(user.getEmail(), "Your Admin Account", "Your password is: " + randomPassword);
+        emailService.sendEmail(user.getEmail(), "Admin Account Registration", "Your admin account for our E-commerce website is all setup! Your password is: " + randomPassword);
 
         redirectAttributes.addFlashAttribute("message", "Admin created successfully and email sent!");
         return "redirect:/api/v1/admins";
