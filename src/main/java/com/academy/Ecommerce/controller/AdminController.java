@@ -36,7 +36,6 @@ public class AdminController {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final EmailService emailService;
-    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 
 
