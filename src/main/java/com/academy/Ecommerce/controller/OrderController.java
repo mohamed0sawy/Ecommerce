@@ -8,6 +8,7 @@ import com.academy.Ecommerce.service.CartItemService;
 import com.academy.Ecommerce.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.academy.Ecommerce.service.OrderService;
 import org.springframework.stereotype.Controller;
@@ -74,6 +75,7 @@ public class OrderController {
         return "order-details";
     }
 
+    @Transactional
     @GetMapping("/cartItems")
     public String getCartItems(HttpServletRequest request, @RequestParam("payment") String paymentMethod) {
         HttpSession session = request.getSession();
@@ -106,6 +108,8 @@ public class OrderController {
         Cart cart = cartService.findCartByUserId(userId);
         Long cartId = cart.getId();
         cartItemService.deleteCartItemsByCartId(cartId);
-        return "redirect:/api/v1/orders/details";
+        session.removeAttribute("checkedCartItems");
+
+        return "redirect:/api/v1/orders/details/" + order.getId();
     }
 }
