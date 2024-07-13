@@ -10,6 +10,8 @@ import com.academy.Ecommerce.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.academy.Ecommerce.service.OrderService;
 import org.springframework.stereotype.Controller;
@@ -48,6 +50,8 @@ public class OrderController {
     @Autowired
     private ProductRepository productRepository;
 
+
+
     @GetMapping
     public String getAllOrders(Model model, HttpServletRequest request) {
         List<Order> allOrders = orderService.getAllOrders();
@@ -58,14 +62,16 @@ public class OrderController {
 
     @GetMapping("/history/{userId}")
     public String getOrderHistory(@PathVariable Long userId, HttpServletRequest request, Model model) {
+
         List<Order> orderHistory = orderService.getOrderHistoryByUserId(userId);
 
         HttpSession session = request.getSession();
+
         Long selectedAddressId = (Long) session.getAttribute("selectedAddressId");
-        Address selectedAddress = addressService.getAddressById(selectedAddressId);
+
+
 
         model.addAttribute("orders", orderHistory);
-        model.addAttribute("selectedAddress", selectedAddress);
         //model.addAttribute("paymentMethod", paymentMethod);
         return "order-history";
     }
@@ -73,13 +79,16 @@ public class OrderController {
 
     @GetMapping("/details/{orderId}")
     public String getOrderDetails(@PathVariable Long orderId, HttpServletRequest request, Model model) {
+
         Order order = orderService.getOrderById(orderId);
         HttpSession session = request.getSession();
-        Long selectedAddressId = (Long) session.getAttribute("selectedAddressId");
-        Address selectedAddress = addressService.getAddressById(selectedAddressId);
+        session.setAttribute("orderId", orderId);
+//        Long selectedAddressId = (Long) session.getAttribute("selectedAddressId");
+//        logger.debug("ORDER CONTROLLER: SELECTED ADDRESS",selectedAddressId);
+//        Address selectedAddress = addressService.getAddressById(selectedAddressId);
 
         model.addAttribute("order", order);
-        model.addAttribute("selectedAddress", selectedAddress);
+//        model.addAttribute("selectedAddress", selectedAddress);
         return "order-details";
     }
 

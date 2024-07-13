@@ -1,11 +1,14 @@
 package com.academy.Ecommerce.service;
 
+import com.academy.Ecommerce.controller.OrderController;
 import com.academy.Ecommerce.exception.NotFoundException;
 import com.academy.Ecommerce.model.*;
 import com.academy.Ecommerce.repository.OrderItemRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.academy.Ecommerce.repository.OrderRepository;
 import com.academy.Ecommerce.repository.UserRepository;
@@ -31,6 +34,8 @@ public class OrderService {
     private OrderItemRepository orderItemRepository;
 
 
+
+
     public List<Order> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
@@ -44,10 +49,13 @@ public class OrderService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
         List<Order> orderHistory = user.getOrders();
-        for (Order order : orderHistory) {
-            double totalPrice = calculateTotalPrice(order.getItems());
-            order.setTotalPrice(totalPrice);
-        }
+
+//        for (Order order : orderHistory) {
+//            logger.debug("ORDER SERVICE: SELECTED ORDERS LOOP {}",order);
+//
+//            double totalPrice = calculateTotalPrice(order.getItems());
+//            order.setTotalPrice(totalPrice);
+//        }
         return orderHistory;
     }
 
