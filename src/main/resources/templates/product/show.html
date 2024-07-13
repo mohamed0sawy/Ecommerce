@@ -121,6 +121,8 @@
                         <p class="product-description" th:text="${product.description}">Product Description</p>
                     </div>
                     <div class="d-flex align-items-center mb-3">
+                        <h5 class="mr-2">Average Rating: </h5>
+
                         <div class="ml-3">
                             <i th:class="fa" th:classappend="${star <= product.averageRating ? 'fa-star' : 'fa-star-o'}"
                                th:each="star : ${#numbers.sequence(1, 5)}"></i>
